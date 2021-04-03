@@ -1,0 +1,7 @@
+#ifndef WIFICREDENTIALS
+#define WIFICREDENTIALS
+
+#define WIFI_SSID "V3_MR_HA"
+#define WIFI_PASSWORD "Buihtd886633"
+
+#endif
