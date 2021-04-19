@@ -3,7 +3,9 @@
 
 void test();
 
-void mode();
+void modeHandle();
 void manualHandle();
+void rainbowchaserHandle();
+void flowHandle();
 
 #endif
