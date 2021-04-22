@@ -5,8 +5,11 @@
 
 CRGB leds[NUM_LEDS];
 int data[10];
+Mode modeVar;
 
-void ledSetup() {
+void ledSetup()
+{
+    modeVar = (Mode)EEPROM.read(MODE_ADDRESS);
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 }
 
@@ -40,34 +43,14 @@ void ledHandling(void *parameter)
     switch (EEPROM.read(MODE_ADDRESS))
     {
 
-    case RAINBOW_CHASER:
+    case MANUAL:
         for (;;)
         {
             for (int i = 0; i <= 299; i++)
             {
-                leds[i - 1] = CRGB::Black;
-                leds[i].setHue(i);
-                FastLED.show();
-                vTaskDelay(data[RAINBOW_CHASER_DELAY]);
+                leds[i].setRGB(data[MANUAL_RED], data[MANUAL_RED], data[MANUAL_BLUE]);
+                vTaskDelay(1);
             }
-            for (int i = 299; i >= 0; i--)
-            {
-                leds[i + 1] = CRGB::Black;
-                leds[i].setHue(i);
-                FastLED.show();
-                vTaskDelay(data[RAINBOW_CHASER_DELAY]);
-            }
-        }
-        break;
-
-    case MANUAL:
-        for (;;)
-        {
-        for (int i = 0; i <= 299; i++)
-        {
-            leds[i].setRGB(data[MANUAL_RED],data[MANUAL_RED], data[MANUAL_BLUE]);
-            vTaskDelay(1);
-        }
         }
         break;
 
@@ -102,6 +85,26 @@ void ledHandling(void *parameter)
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(5 / portTICK_PERIOD_MS);
+            }
+        }
+        break;
+
+    case RAINBOW_CHASER:
+        for (;;)
+        {
+            for (int i = 0; i <= 299; i++)
+            {
+                leds[i - 1] = CRGB::Black;
+                leds[i].setHue(i);
+                FastLED.show();
+                vTaskDelay(data[RAINBOW_CHASER_DELAY]);
+            }
+            for (int i = 299; i >= 0; i--)
+            {
+                leds[i + 1] = CRGB::Black;
+                leds[i].setHue(i);
+                FastLED.show();
+                vTaskDelay(data[RAINBOW_CHASER_DELAY]);
             }
         }
         break;

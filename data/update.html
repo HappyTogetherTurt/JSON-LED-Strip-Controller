@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<head>
+    <title>
+        Update Mode
+    </title>
+    <script src="/EasyHTTP.js"></script>
+    <script>
+        const http = new EasyHTTP;
+        function onClickHandle(mode)
+        {
+            http.put("http://192.168.6.38/mode", { "mode": mode })
+                .then(data => console.log(data))
+                .then(err => console.log(err));
+                window.location.reload();
+        }
+    </script>
+    <style>
+        ul {
+            list-style-type: none;
+            text-align: center;
+        }
+
+        li {
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: #2080da;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            font-size: 60px;
+            width: 85%;
+            height: 110px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li>
+            <button onclick="onClickHandle(1)">
+                Manual
+            </button>
+        </li>
+        <li>
+            <button onclick="onClickHandle(2)">
+                Breathe
+            </button>
+        </li>
+        <li>
+            <button onclick="onClickHandle(3)">
+                Rainbow Chaser
+            </button>
+        </li>
+        <li>
+            <button onclick="onClickHandle(4)">
+                Flow
+            </button>
+        </li>
+        <li>
+            <button onclick="onClickHandle(5)">
+                Christmas
+            </button>
+        </li>
+    </ul>
+</body>

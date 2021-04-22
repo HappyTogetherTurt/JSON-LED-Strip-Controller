@@ -13,7 +13,6 @@ void ledHandling(void* parameter);
 
 extern int data[10];
 
-
 enum Mode 
 {
 UPDATE,
@@ -23,6 +22,8 @@ BREATHE,
 FLOW,
 CHRISTMAS
 };
+
+extern Mode modeVar;
 
 enum Address
 {
