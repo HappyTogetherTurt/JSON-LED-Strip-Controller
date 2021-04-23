@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<head>
+    <script>
+        const http = new EasyHTTP;
+        function onClickHandle(mode) {
+            http.put("http://192.168.6.38/mode", { "mode": mode })
+                .then(data => console.log(data))
+                .then(err => console.log(err));
+        }
+
+        function sidenavOpen() {
+            document.getElementById("mySideNav").style.width = "250px";
+        }
+    </script>
+</head>
+
+<body>
+    <style>
+        .sidenav {
+            height: 100%;
+            /* 100% Full-height */
+            width: 0;
+            /* 0 width - change this with JavaScript */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Stay on top */
+            top: 0;
+            /* Stay at the top */
+            left: 0;
+            background-color: #111;
+            /* Black*/
+            overflow-x: hidden;
+            /* Disable horizontal scroll */
+            padding-top: 60px;
+            /* Place content 60px from the top */
+            transition: 0.5s;
+            /* 0.5 second transition effect to slide in the sidenav */
+        }
+    </style>
+    <div class="sidenav" id=mySidenav>
+        <ul>
+            <li>
+                <button onclick="onClickHandle(1)">
+                    Manual
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(2)">
+                    Breathe
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(3)">
+                    Rainbow Chaser
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(4)">
+                    Flow
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(5)">
+                    Christmas
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <button onclick="sidenavOpen()">
+            Test
+        </button>
+    </div>
+</body>

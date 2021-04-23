@@ -1,11 +1,84 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
+<<<<<<< HEAD
 #include <EEPROM.h>
 #include <Esp.h>
+=======
+#include <SPIFFS.h>
+#include <EEPROM.h>
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
 
 #include "Handling.h"
 #include "ServerDeclaration.h"
 #include "MyLeds.h"
+
+void handleIndexPage()
+{
+    Serial.println(modeVar);
+    String uri;
+    switch (modeVar)
+    {
+    case UPDATE:
+        uri = "/update.html";
+        break;
+
+    case MANUAL:
+        uri = "/manual.html";
+        break;
+
+    case BREATHE:
+        uri = "/breathe.html";
+        break;
+
+    case RAINBOW_CHASER:
+        uri = "/rainbowchaser.html";
+        break;
+
+    case FLOW:
+        uri = "/flow.html";
+        break;
+
+    case CHRISTMAS:
+        uri = "/christmas.html";
+        break;
+
+    default:
+        uri = "/uhoh.html";
+        break;
+    }
+    File file = SPIFFS.open(uri, "r");
+    String fileAsString;
+    while (file.available())
+    {
+        fileAsString += (char)file.read();
+    }
+    server.sendHeader("Connection", "close");
+    server.send(200, "text/html", fileAsString);
+}
+
+void handleManualPage()
+{
+    File file = SPIFFS.open("/manual.html", "r");
+    String fileAsString;
+    while (file.available())
+    {
+        fileAsString += (char)file.read();
+    }
+    server.sendHeader("Connection", "close");
+    server.send(200, "text/html", fileAsString);
+}
+
+void handleEasyHTTP()
+{
+    File file = SPIFFS.open("/EasyHTTP.js", "r");
+    String fileAsString;
+    while (file.available())
+    {
+        fileAsString += (char)file.read();
+    }
+    server.sendHeader("Connection", "close");
+    server.send(200, "text/html", fileAsString);
+}
 
 void test()
 {
@@ -57,7 +130,11 @@ void rainbowchaserHandle()
     StaticJsonDocument<25> doc;
     deserializeJson(doc, server.arg("plain"));
 
+<<<<<<< HEAD
     data[RAINBOW_CHASER_SPEED] = doc["rainbowChaserSpeed"];
+=======
+    data[RAINBOW_CHASER_DELAY] = doc["rainbowChaserSpeed"];
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
 }
 
 void flowHandle()
@@ -68,7 +145,11 @@ void flowHandle()
     StaticJsonDocument<25> doc;
     deserializeJson(doc, server.arg("plain"));
 
+<<<<<<< HEAD
     data[FLOW_SPEED] = doc["flowSpeed"];
+=======
+    data[FLOW_DELAY] = doc["flowSpeed"];
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
 }
 
 void christmasHandle()
@@ -79,5 +160,9 @@ void christmasHandle()
     StaticJsonDocument<25> doc;
     deserializeJson(doc, server.arg("plain"));
 
+<<<<<<< HEAD
     data[CHRISTMAS_SPEED] = doc["chrstmasSpeed"];
+=======
+    data[CHRISTMAS_DELAY] = doc["chrstmasSpeed"];
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
 }

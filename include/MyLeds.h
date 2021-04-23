@@ -14,7 +14,11 @@ void ledHandling(void *parameter);
 extern int data[10];
 extern CRGB leds[NUM_LEDS];
 
+<<<<<<< HEAD
 enum Mode
+=======
+enum Mode 
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
 {
     UPDATE,
     MANUAL,
@@ -23,6 +27,8 @@ enum Mode
     FLOW,
     CHRISTMAS
 };
+
+extern Mode modeVar;
 
 enum Address
 {
