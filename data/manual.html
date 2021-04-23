@@ -3,14 +3,24 @@
 <head>
     <script>
         const http = new EasyHTTP;
+        var pressed = false;
         function onClickHandle(mode) {
             http.put("http://192.168.6.38/mode", { "mode": mode })
                 .then(data => console.log(data))
                 .then(err => console.log(err));
         }
 
-        function sidenavOpen() {
-            document.getElementById("mySideNav").style.width = "250px";
+        function sidenavToggle() {
+            if (this.pressed){
+                console.log("pressed");
+                document.getElementById("mySideNav").style.width = "0px";
+                this.pressed = false;
+            }
+            else {
+                console.log("not pressed");
+                document.getElementById("mySideNav").style.width = "250px";
+                this.pressed = true;
+            }
         }
     </script>
 </head>
@@ -19,27 +29,42 @@
     <style>
         .sidenav {
             height: 100%;
-            /* 100% Full-height */
             width: 0;
-            /* 0 width - change this with JavaScript */
             position: fixed;
-            /* Stay in place */
             z-index: 1;
-            /* Stay on top */
             top: 0;
-            /* Stay at the top */
             left: 0;
             background-color: #111;
-            /* Black*/
             overflow-x: hidden;
-            /* Disable horizontal scroll */
             padding-top: 60px;
-            /* Place content 60px from the top */
             transition: 0.5s;
-            /* 0.5 second transition effect to slide in the sidenav */
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .sidenav button {
+            background-color: #2080da;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            font-size: 60px;
+            width: 85%;
+            height: 110px;
+        }
+
+        .floating button {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            border-radius: 40px;
+            bottom: 30px;
+            right: 30px;
         }
     </style>
-    <div class="sidenav" id=mySidenav>
+    <div class="sidenav" id=mySideNav>
         <ul>
             <li>
                 <button onclick="onClickHandle(1)">
@@ -68,8 +93,8 @@
             </li>
         </ul>
     </div>
-    <div>
-        <button onclick="sidenavOpen()">
+    <div class="floating">
+        <button onclick="sidenavToggle()">
             Test
         </button>
     </div>
