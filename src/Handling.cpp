@@ -10,38 +10,7 @@
 void handleIndexPage()
 {
     Serial.println(modeVar);
-    String uri;
-    switch (modeVar)
-    {
-    case UPDATE:
-        uri = "/update.html";
-        break;
-
-    case MANUAL:
-        uri = "/manual.html";
-        break;
-
-    case BREATHE:
-        uri = "/breathe.html";
-        break;
-
-    case RAINBOW_CHASER:
-        uri = "/rainbowchaser.html";
-        break;
-
-    case FLOW:
-        uri = "/flow.html";
-        break;
-
-    case CHRISTMAS:
-        uri = "/christmas.html";
-        break;
-
-    default:
-        uri = "/uhoh.html";
-        break;
-    }
-    File file = SPIFFS.open(uri, "r");
+    File file = SPIFFS.open("/controller.html", "r");
     String fileAsString;
     while (file.available())
     {
@@ -51,7 +20,7 @@ void handleIndexPage()
     server.send(200, "text/html", fileAsString);
 }
 
-void handleManualPage()
+/*void handleManualPage()
 {
     File file = SPIFFS.open("/manual.html", "r");
     String fileAsString;
@@ -73,12 +42,13 @@ void handleEasyHTTP()
     }
     server.sendHeader("Connection", "close");
     server.send(200, "text/html", fileAsString);
-}
+}*/
 
 void test()
 {
     server.sendHeader("Connection", "close");
-    server.send(200, "text/plain", "TEST_OK");
+    String _ = String(modeVar);
+    server.send(200, "text/plain", "Here be the 2");
     for (unsigned int i = 0; i <= 9; i++)
     {
         digitalWrite(2, HIGH);
@@ -92,7 +62,9 @@ void modeHandle()
 {
 
     server.sendHeader("Connection", "close");
-    server.send(200, "text/plain", "OK");
+    server.send(200, "application/json", "{\"status\":\"MODE_RECIEVED\"}");
+
+    Serial.println(server.arg("plain"));
 
     StaticJsonDocument<25> doc;
     deserializeJson(doc, server.arg("plain"));

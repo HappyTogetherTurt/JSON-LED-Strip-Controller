@@ -4,9 +4,9 @@
 void test();
 
 void handleIndexPage();
-void handleManualPage();
+/*void handleManualPage();
 
-void handleEasyHTTP();
+void handleEasyHTTP();*/
 
 void modeHandle();
 void manualHandle();
