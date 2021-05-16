@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <SPIFFS.h>
+#include <EEPROM.h>
 //#include <ESPmDNS.h>
 
 #include "WifiCredentials.h"
@@ -10,9 +11,12 @@
 #include "ServerDeclaration.h"
 #include "MyLeds.h"
 
+#define EEPROM_SIZE 5
+
 void setup()
 {
 if(!SPIFFS.begin(true)) {Serial.println("An Error has occurred while mounting SPIFFS");}
+EEPROM.begin(EEPROM_SIZE);
 //if(!MDNS.begin("lights")) {Serial.println("An Error has occurred while beginning mDNS");}
 MYWIFI::wifiSetup();
 pinMode(2, OUTPUT);

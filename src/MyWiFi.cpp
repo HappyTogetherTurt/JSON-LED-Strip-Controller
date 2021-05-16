@@ -32,9 +32,6 @@ void wifiSetup()
     server.begin();
 
     server.on("/", HTTP_GET, handleIndexPage);
-    server.on("/manual.html", HTTP_GET, handleManualPage);
- 
-    server.on("/EasyHTTP.js", HTTP_GET, handleEasyHTTP);
 
     server.on("/test", HTTP_GET, test);
     server.on("/mode",HTTP_PUT, modeHandle);

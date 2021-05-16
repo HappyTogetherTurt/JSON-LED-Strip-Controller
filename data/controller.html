@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width">
+    <script>
+        class EasyHTTP {
+
+            async put(url, data) {
+
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-type': 'application/json',
+                        'mode': 'no-cors'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const resData = await response.json();
+
+                return resData;
+            }
+        }
+        const http = new EasyHTTP;
+        var pressed = false;
+        var modes = ["update", "manual", "breathe", "rainbow_chaser", "flow", "christmas"];
+        function onClickHandle(mode) {
+            http.put("http://192.168.6.35/mode", { "mode": mode })
+                .then(data => console.log(data))
+                .then(err => console.log(err));
+            for (i = 1; i <= 5; i++) {
+                document.getElementById(modes[i]).style.display = "none";
+            }
+            document.getElementById(modes[mode]).style.display = "block";
+            sidenavToggle();
+        }
+
+        function sidenavToggle() {
+            if (this.pressed) {
+                console.log("pressed");
+                document.getElementById("mySideNav").style.width = "0%";
+                this.pressed = false;
+            }
+            else {
+                console.log("not pressed");
+                document.getElementById("mySideNav").style.width = "55vw";
+                this.pressed = true;
+            }
+        }
+    </script>
+    <title>Controller</title>
+</head>
+
+<body>
+    <style>
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+<<<<<<< HEAD:data/manual.html
+            background-color: rgb(202, 202, 202);
+=======
+            background-color: rgb(228, 228, 228);
+>>>>>>> f6135db12cdf18b867d8947f2c8f21e8950305ba:data/controller.html
+            overflow-x: hidden;
+            transition: 0.5s;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0%;
+            padding-left: 0%;
+        }
+
+        li {
+            padding-top: 1vw;
+            padding-bottom: 1vw;
+        }
+
+        .sidenav button {
+            background-color: #ffffff;
+            border: none;
+            border-radius: 10px;
+<<<<<<< HEAD:data/manual.html
+            color: rgb(58, 58, 58);
+            text-align: center;
+            font-size: 60px;
+            width: 85%;
+            height: 110px;
+=======
+            color: white;
+            font-size: 7vw;
+            width: 100%;
+            height: 20vw;
+>>>>>>> f6135db12cdf18b867d8947f2c8f21e8950305ba:data/controller.html
+        }
+
+        .floating button {
+            position: fixed;
+            width: 20vw;
+            height: 20vw;
+            border-radius: 80%;
+            bottom: 5%;
+            right: 5%;
+            font-size: 5vw;
+        }
+
+        .menu {
+            display: none;
+        }
+
+    </style>
+    <div class="sidenav" id=mySideNav>
+        <ul>
+            <li>
+                <button onclick="onClickHandle(1)">
+                    Manual
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(2)">
+                    Breathe
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(3)">
+                    Rainbow Chaser
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(4)">
+                    Flow
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(5)">
+                    Christmas
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="floating">
+        <button onclick="sidenavToggle()">
+            Test
+        </button>
+    </div>
+    <div id="manual" class="menu">
+        <h1>Manual</h1>
+    </div>
+    <div id="breathe" class="menu">
+        <h1>Breathe</h1>
+    </div>
+    <div id="rainbow_chaser" class="menu">
+        <h1>Rainbow Chaser</h1>
+    </div>
+    <div id="flow" class="menu">
+        <h1>Flow</h1>
+    </div>
+    <div id="christmas" class="menu">
+        <h1>Christmas</h1>
+    </div>
+</body>
