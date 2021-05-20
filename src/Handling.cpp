@@ -48,7 +48,7 @@ void test()
 {
     server.sendHeader("Connection", "close");
     String _ = String(modeVar);
-    server.send(200, "text/plain", "Here be the 2");
+    server.send(200, "text/plain", _);
     for (unsigned int i = 0; i <= 9; i++)
     {
         digitalWrite(2, HIGH);
@@ -70,8 +70,11 @@ void modeHandle()
     deserializeJson(doc, server.arg("plain"));
 
     EEPROM.write(MODE_ADDRESS, doc["mode"]);
+    for (int i = 1; i <= 8; i++)
+    {
+        EEPROM.write(i, data[i - 1]);
+    }
     EEPROM.commit();
-    delay(500);
     ESP.restart();
 }
 
@@ -83,9 +86,9 @@ void manualHandle()
     StaticJsonDocument<96> doc;
     deserializeJson(doc, server.arg("plain"));
 
-    data[MANUAL_RED] = doc["red"];
-    data[MANUAL_GREEN] = doc["green"];
-    data[MANUAL_BLUE] = doc["blue"];
+    if (doc["red"] != 256) {data[MANUAL_RED] = doc["red"];}
+    if (doc["green"] != 256) {data[MANUAL_GREEN] = doc["green"];}
+    if (doc["blue"] != 256) {data[MANUAL_BLUE] = doc["blue"];}
 }
 
 void rainbowchaserHandle()

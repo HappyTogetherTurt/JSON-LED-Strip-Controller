@@ -44,44 +44,55 @@ void ledHandling(void *parameter)
     {
 
     case MANUAL:
+        data[MANUAL_RED] = EEPROM.read(RED_ADDRESS);
+        data[MANUAL_GREEN] = EEPROM.read(GREEN_ADDRESS);
+        data[MANUAL_BLUE] = EEPROM.read(BLUE_ADDRESS);
         for (;;)
         {
             for (int i = 0; i <= 299; i++)
             {
-                leds[i].setRGB(data[MANUAL_RED], data[MANUAL_RED], data[MANUAL_BLUE]);
+                leds[i].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
+                FastLED.show();
                 vTaskDelay(1);
             }
         }
         break;
 
     case BREATHE:
+        data[BREATHE_RED] = EEPROM.read(RED_ADDRESS);
+        data[BREATHE_GREEN] = EEPROM.read(GREEN_ADDRESS);
+        data[BREATHE_BLUE] = EEPROM.read(BLUE_ADDRESS);
         for (int i = 0; i <= 299; i++)
         {
-            leds[i].setRGB(EEPROM.read(RED_ADDRESS), EEPROM.read(GREEN_ADDRESS), EEPROM.read(BLUE_ADDRESS));
+            leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
         }
         FastLED.show();
         for (;;)
         {
             for (int i = 0; i <= 128; i++)
             {
+                leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(5 / portTICK_PERIOD_MS);
             }
             for (int i = 128; i <= 255; i++)
             {
+                leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(1 / portTICK_PERIOD_MS);
             }
             for (int i = 255; i >= 128; i--)
             {
+                leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(1 / portTICK_PERIOD_MS);
             }
             for (int i = 128; i >= 0; i--)
             {
+                leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(5 / portTICK_PERIOD_MS);
@@ -90,6 +101,7 @@ void ledHandling(void *parameter)
         break;
 
     case RAINBOW_CHASER:
+        data[RAINBOW_CHASER_DELAY] = 4;
         for (;;)
         {
             for (int i = 0; i <= 299; i++)
@@ -110,6 +122,7 @@ void ledHandling(void *parameter)
         break;
 
     case FLOW:
+        data[FLOW_DELAY] = 20;
         for (;;)
         {
             for (int i = 0; i <= 255; i++)
@@ -125,7 +138,7 @@ void ledHandling(void *parameter)
         break;
 
     case CHRISTMAS:
-
+        data[CHRISTMAS_DELAY] = 20;
         for (;;)
         {
             for (int i = 0; i <= 299; i++)

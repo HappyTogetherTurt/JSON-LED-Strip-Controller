@@ -35,7 +35,8 @@ void wifiSetup()
 
     server.on("/test", HTTP_GET, test);
     server.on("/mode",HTTP_PUT, modeHandle);
-
+    server.on("/rgb", HTTP_PUT, manualHandle);
+    
     server.on(
         "/update", HTTP_POST, []() {
     server.sendHeader("Connection", "close");
