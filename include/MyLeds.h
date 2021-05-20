@@ -41,7 +41,8 @@ enum ManualEnum
 {
 MANUAL_RED,
 MANUAL_GREEN,
-MANUAL_BLUE
+MANUAL_BLUE,
+MANUAL_BREATHE
 };
 
 enum BreatheEnum

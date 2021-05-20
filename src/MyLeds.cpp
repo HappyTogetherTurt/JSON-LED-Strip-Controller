@@ -49,11 +49,53 @@ void ledHandling(void *parameter)
         data[MANUAL_BLUE] = EEPROM.read(BLUE_ADDRESS);
         for (;;)
         {
-            for (int i = 0; i <= 299; i++)
+            for (;;)
             {
-                leds[i].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
-                FastLED.show();
-                vTaskDelay(1);
+                for (int i = 0; i <= 299; i++)
+                {
+                    if(data[MANUAL_BREATHE]){break;}
+                    leds[i].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
+                    FastLED.show();
+                    vTaskDelay(1);
+                }
+                if(data[MANUAL_BREATHE]){break;}
+            }
+            /*---*/
+            for (;;)
+            {
+                for (int i = 0; i <= 128; i++)
+                {
+                    if(!data[MANUAL_BREATHE]){break;}
+                    leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                    FastLED.setBrightness(i);
+                    FastLED.show();
+                    vTaskDelay(5 / portTICK_PERIOD_MS);
+                }
+                for (int i = 128; i <= 255; i++)
+                {
+                    if(!data[MANUAL_BREATHE]){break;}
+                    leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                    FastLED.setBrightness(i);
+                    FastLED.show();
+                    vTaskDelay(1 / portTICK_PERIOD_MS);
+                }
+                for (int i = 255; i >= 128; i--)
+                {
+                    if(!data[MANUAL_BREATHE]){break;}
+                    leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                    FastLED.setBrightness(i);
+                    FastLED.show();
+                    vTaskDelay(1 / portTICK_PERIOD_MS);
+                }
+                for (int i = 128; i >= 0; i--)
+                {
+                    if(!data[MANUAL_BREATHE]){break;}
+                    leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                    FastLED.setBrightness(i);
+                    FastLED.show();
+                    vTaskDelay(5 / portTICK_PERIOD_MS);
+                }
+                if(!data[MANUAL_BREATHE]){FastLED.setBrightness(255); break;}
             }
         }
         break;
