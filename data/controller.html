@@ -89,6 +89,17 @@
             speed_actual = 0.5 * speed_actual;
             http.put("http://192.168.6.35/rainbowChaser", { "rainbowChaserSpeed": speed_actual });
         }
+
+        function onFlowSliderRelease(speed_percentage) {
+            speed_actual = 100 - speed_percentage;
+            http.put("http://192.168.6.35/rainbowChaser", { "flowSpeed": speed_actual });
+        }
+
+        function onChristmasSliderRelease(speed_percentage) {
+            speed_actual = 100 - speed_percentage;
+            speed_actual = 0.5 * speed_actual;
+            http.put("http://192.168.6.35/rainbowChaser", { "christmasSpeed": speed_actual });
+        }
     </script>
     <title>Controller</title>
 </head>
@@ -296,12 +307,20 @@
         <input type="range" min="1" max="100" value="1" class="inputSlider" id="rainbowChaserSlider"
             oninput="onSliderChange(value, 'rainbowChaserDisplay')" ontouchend="onRainbowChaserSliderRelease(value)"
             onmouseup="onRainbowChaserSliderRelease(value)">
-        <p id="rainbowChaserDisplay">0</p>
+        <p id="rainbowChaserDisplay">1</p>
     </div>
     <div id="flow" class="menu">
-        <h1>Flow</h1>
+        <h1 style="text-align: center;">Flow</h1>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="flowSlider"
+            oninput="onSliderChange(value, 'flowDisplay')" ontouchend="onFlowSliderRelease(value)"
+            onmouseup="onFlowSliderRelease(value)">
+        <p id="flowDisplay">1</p>
     </div>
     <div id="christmas" class="menu">
-        <h1>Christmas</h1>
+        <h1 style="text-align: center;">Christmas</h1>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="christmasSlider"
+            oninput="onSliderChange(value, 'christmasDisplay')" ontouchend="onChristmasSliderRelease(value)"
+            onmouseup="onChristmasSliderRelease(value)">
+        <p id="christmasDisplay">1</p>
     </div>
 </body>
