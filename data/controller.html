@@ -36,19 +36,17 @@
 
         function sidenavToggle() {
             if (this.pressed) {
-                console.log("pressed");
                 document.getElementById("mySideNav").style.width = "0%";
                 this.pressed = false;
             }
             else {
-                console.log("not pressed");
                 document.getElementById("mySideNav").style.width = "55vw";
                 this.pressed = true;
             }
         }
 
-        function onColourSliderChange(sliderID, displayID) {
-            document.getElementById(displayID).innerHTML = document.getElementById(sliderID).value;
+        function onSliderChange(value, displayID) {
+            document.getElementById(displayID).innerHTML = value;
         }
 
         function onColourSliderRelease(colour, sliderID) {
@@ -58,23 +56,23 @@
                         'red': parseInt(document.getElementById(sliderID).value, 10),
                         'green': 256,
                         'blue': 256
-                    }                            
+                    }
                     break;
-                    case 'green':
+                case 'green':
                     data = {
                         'red': 256,
                         'green': parseInt(document.getElementById(sliderID).value, 10),
                         'blue': 256
                     }
                     break;
-                    case 'blue':
+                case 'blue':
                     data = {
                         'red': 256,
                         'green': 256,
                         'blue': parseInt(document.getElementById(sliderID).value, 10)
                     }
                     break;
-                    default:
+                default:
                     data = {
                         'red': 200,
                         'green': 10,
@@ -84,6 +82,12 @@
                     break;
             }
             http.put("http://192.168.6.35/rgb", data);
+        }
+
+        function onRainbowChaserSliderRelease(speed_percentage) {
+            speed_actual = 100 - speed_percentage;
+            speed_actual = 0.5 * speed_actual;
+            http.put("http://192.168.6.35/rainbowChaser",{  "rainbowChaserSpeed": speed_actual} );
         }
     </script>
     <title>Controller</title>
@@ -146,7 +150,75 @@
         }
 
         .sliderDisplayPair {
-            margin-bottom: 20vh;
+            margin-bottom: 17vh;
+        }
+
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #0ccc5c;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .breatheswitch {
+            text-align: left;
+            padding-bottom: 15vw;
         }
     </style>
     <div class="sidenav" id=mySideNav>
@@ -180,31 +252,40 @@
     </div>
     <div class="floating">
         <button onclick="sidenavToggle()">
-            Test
+            Menu
         </button>
     </div>
     <div id="manual" class="menu">
         <h1 style="text-align: center;">Manual</h1>
         <div class="sliderDisplayPair">
+            <p>Red:</p>
             <input type="range" min="0" max="255" value="0" class="colourSlider" id="manualRedSlider"
-                oninput="onColourSliderChange('manualRedSlider', 'manualRedDisplay')"
+                oninput="onSliderChange(value, 'manualRedDisplay')"
                 ontouchend="onColourSliderRelease('red', 'manualRedSlider')"
                 onmouseup="onColourSliderRelease('red', 'manualRedSlider')">
             <p id="manualRedDisplay">0</p>
         </div>
         <div class="sliderDisplayPair">
+            <p>Green:</p>
             <input type="range" min="0" max="255" value="0" class="colourSlider" id="manualGreenSlider"
-                oninput="onColourSliderChange('manualGreenSlider', 'manualGreenDisplay')"
+                oninput="onSliderChange(value, 'manualGreenDisplay')"
                 ontouchend="onColourSliderRelease('green', 'manualGreenSlider')"
                 onmouseup="onColourSliderRelease('green', 'manualGreenSlider')">
             <p id="manualGreenDisplay">0</p>
         </div>
         <div class="sliderDisplayPair">
+            <p>Blue:</p>
             <input type="range" min="0" max="255" value="0" class="colourSlider" id="manualBlueSlider"
-                oninput="onColourSliderChange('manualBlueSlider', 'manualBlueDisplay')"
+                oninput="onSliderChange(value, 'manualBlueDisplay')"
                 ontouchend="onColourSliderRelease('blue', 'manualBlueSlider')"
                 onmouseup="onColourSliderRelease('blue', 'manualBlueSlider')">
             <p id="manualBlueDisplay">0</p>
+        </div>
+        <div class="breatheswitch">
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+        </label>
         </div>
     </div>
     <div id="breathe" class="menu">
@@ -212,6 +293,11 @@
     </div>
     <div id="rainbow_chaser" class="menu">
         <h1>Rainbow Chaser</h1>
+        <input type="range" min="1" max="100" value="1" class="RainbowChaserSlider" id="rainbowChaserSlider"
+        oninput="onSliderChange(value, 'rainbowChaserDisplay')"
+        ontouchend="onRainbowChaserSliderRelease(value)"
+        onmouseup="onRainbowChaserSliderRelease(value)">
+    <p id="rainbowChaserDisplay">0</p>
     </div>
     <div id="flow" class="menu">
         <h1>Flow</h1>
