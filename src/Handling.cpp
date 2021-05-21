@@ -121,5 +121,5 @@ void christmasHandle()
     StaticJsonDocument<25> doc;
     deserializeJson(doc, server.arg("plain"));
 
-    data[CHRISTMAS_DELAY] = doc["chrstmasSpeed"];
+    data[CHRISTMAS_DELAY] = doc["christmasSpeed"];
 }
