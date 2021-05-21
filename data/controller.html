@@ -97,7 +97,7 @@
 
         function onChristmasSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            speed_actual = 0.5 * speed_actual;
+            speed_actual = 2 * speed_actual;
             http.put("http://192.168.6.35/christmas", { "christmasSpeed": speed_actual });
         }
     </script>
