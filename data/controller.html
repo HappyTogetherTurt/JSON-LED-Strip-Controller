@@ -92,13 +92,13 @@
 
         function onFlowSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            http.put("http://192.168.6.35/rainbowChaser", { "flowSpeed": speed_actual });
+            http.put("http://192.168.6.35/flow", { "flowSpeed": speed_actual });
         }
 
         function onChristmasSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
             speed_actual = 0.5 * speed_actual;
-            http.put("http://192.168.6.35/rainbowChaser", { "christmasSpeed": speed_actual });
+            http.put("http://192.168.6.35/chrsitmas", { "christmasSpeed": speed_actual });
         }
     </script>
     <title>Controller</title>
