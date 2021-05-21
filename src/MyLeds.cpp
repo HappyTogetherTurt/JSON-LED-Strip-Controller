@@ -53,19 +53,28 @@ void ledHandling(void *parameter)
             {
                 for (int i = 0; i <= 299; i++)
                 {
-                    if(data[MANUAL_BREATHE]){break;}
+                    if (data[MANUAL_BREATHE])
+                    {
+                        break;
+                    }
                     leds[i].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
                     FastLED.show();
                     vTaskDelay(1);
                 }
-                if(data[MANUAL_BREATHE]){break;}
+                if (data[MANUAL_BREATHE])
+                {
+                    break;
+                }
             }
             /*---*/
             for (;;)
             {
                 for (int i = 0; i <= 128; i++)
                 {
-                    if(!data[MANUAL_BREATHE]){break;}
+                    if (!data[MANUAL_BREATHE])
+                    {
+                        break;
+                    }
                     leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
                     FastLED.setBrightness(i);
                     FastLED.show();
@@ -73,7 +82,10 @@ void ledHandling(void *parameter)
                 }
                 for (int i = 128; i <= 255; i++)
                 {
-                    if(!data[MANUAL_BREATHE]){break;}
+                    if (!data[MANUAL_BREATHE])
+                    {
+                        break;
+                    }
                     leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
                     FastLED.setBrightness(i);
                     FastLED.show();
@@ -81,7 +93,10 @@ void ledHandling(void *parameter)
                 }
                 for (int i = 255; i >= 128; i--)
                 {
-                    if(!data[MANUAL_BREATHE]){break;}
+                    if (!data[MANUAL_BREATHE])
+                    {
+                        break;
+                    }
                     leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
                     FastLED.setBrightness(i);
                     FastLED.show();
@@ -89,13 +104,20 @@ void ledHandling(void *parameter)
                 }
                 for (int i = 128; i >= 0; i--)
                 {
-                    if(!data[MANUAL_BREATHE]){break;}
+                    if (!data[MANUAL_BREATHE])
+                    {
+                        break;
+                    }
                     leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
                     FastLED.setBrightness(i);
                     FastLED.show();
                     vTaskDelay(5 / portTICK_PERIOD_MS);
                 }
-                if(!data[MANUAL_BREATHE]){FastLED.setBrightness(255); break;}
+                if (!data[MANUAL_BREATHE])
+                {
+                    FastLED.setBrightness(255);
+                    break;
+                }
             }
         }
         break;
@@ -180,7 +202,7 @@ void ledHandling(void *parameter)
         break;
 
     case CHRISTMAS:
-        data[CHRISTMAS_DELAY] = 20;
+        data[CHRISTMAS_DELAY] = 140;
         for (;;)
         {
             for (int i = 0; i <= 299; i++)
