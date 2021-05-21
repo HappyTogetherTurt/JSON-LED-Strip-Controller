@@ -49,7 +49,7 @@
             document.getElementById(displayID).innerHTML = value;
         }
 
-        function onColourSliderRelease(colour, sliderID) {
+        function oninputSliderRelease(colour, sliderID) {
             switch (colour) {
                 case 'red':
                     data = {
@@ -87,7 +87,7 @@
         function onRainbowChaserSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
             speed_actual = 0.5 * speed_actual;
-            http.put("http://192.168.6.35/rainbowChaser",{  "rainbowChaserSpeed": speed_actual} );
+            http.put("http://192.168.6.35/rainbowChaser", { "rainbowChaserSpeed": speed_actual });
         }
     </script>
     <title>Controller</title>
@@ -145,7 +145,7 @@
             text-align: right;
         }
 
-        .colourSlider {
+        .inputSlider {
             width: 95%;
         }
 
@@ -259,45 +259,44 @@
         <h1 style="text-align: center;">Manual</h1>
         <div class="sliderDisplayPair">
             <p>Red:</p>
-            <input type="range" min="0" max="255" value="0" class="colourSlider" id="manualRedSlider"
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualRedSlider"
                 oninput="onSliderChange(value, 'manualRedDisplay')"
-                ontouchend="onColourSliderRelease('red', 'manualRedSlider')"
-                onmouseup="onColourSliderRelease('red', 'manualRedSlider')">
+                ontouchend="oninputSliderRelease('red', 'manualRedSlider')"
+                onmouseup="oninputSliderRelease('red', 'manualRedSlider')">
             <p id="manualRedDisplay">0</p>
         </div>
         <div class="sliderDisplayPair">
             <p>Green:</p>
-            <input type="range" min="0" max="255" value="0" class="colourSlider" id="manualGreenSlider"
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualGreenSlider"
                 oninput="onSliderChange(value, 'manualGreenDisplay')"
-                ontouchend="onColourSliderRelease('green', 'manualGreenSlider')"
-                onmouseup="onColourSliderRelease('green', 'manualGreenSlider')">
+                ontouchend="oninputSliderRelease('green', 'manualGreenSlider')"
+                onmouseup="oninputSliderRelease('green', 'manualGreenSlider')">
             <p id="manualGreenDisplay">0</p>
         </div>
         <div class="sliderDisplayPair">
             <p>Blue:</p>
-            <input type="range" min="0" max="255" value="0" class="colourSlider" id="manualBlueSlider"
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualBlueSlider"
                 oninput="onSliderChange(value, 'manualBlueDisplay')"
-                ontouchend="onColourSliderRelease('blue', 'manualBlueSlider')"
-                onmouseup="onColourSliderRelease('blue', 'manualBlueSlider')">
+                ontouchend="oninputSliderRelease('blue', 'manualBlueSlider')"
+                onmouseup="oninputSliderRelease('blue', 'manualBlueSlider')">
             <p id="manualBlueDisplay">0</p>
         </div>
         <div class="breatheswitch">
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label>
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </label>
         </div>
     </div>
     <div id="breathe" class="menu">
         <h1>Breathe</h1>
     </div>
     <div id="rainbow_chaser" class="menu">
-        <h1>Rainbow Chaser</h1>
-        <input type="range" min="1" max="100" value="1" class="RainbowChaserSlider" id="rainbowChaserSlider"
-        oninput="onSliderChange(value, 'rainbowChaserDisplay')"
-        ontouchend="onRainbowChaserSliderRelease(value)"
-        onmouseup="onRainbowChaserSliderRelease(value)">
-    <p id="rainbowChaserDisplay">0</p>
+        <h1 style="text-align: center;">Rainbow Chaser</h1>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="rainbowChaserSlider"
+            oninput="onSliderChange(value, 'rainbowChaserDisplay')" ontouchend="onRainbowChaserSliderRelease(value)"
+            onmouseup="onRainbowChaserSliderRelease(value)">
+        <p id="rainbowChaserDisplay">0</p>
     </div>
     <div id="flow" class="menu">
         <h1>Flow</h1>
