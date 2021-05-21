@@ -36,6 +36,9 @@ void wifiSetup()
     server.on("/test", HTTP_GET, test);
     server.on("/mode",HTTP_PUT, modeHandle);
     server.on("/rgb", HTTP_PUT, manualHandle);
+    server.on("/rainbowChaser", HTTP_PUT, rainbowchaserHandle);
+    server.on("/flow", HTTP_PUT, flowHandle);
+    server.on("/christmas", HTTP_PUT, christmasHandle);
     
     server.on(
         "/update", HTTP_POST, []() {
