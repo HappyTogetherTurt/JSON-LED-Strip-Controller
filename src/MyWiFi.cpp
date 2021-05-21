@@ -36,9 +36,6 @@ void wifiSetup()
     server.begin();
 
     server.on("/", HTTP_GET, handleIndexPage);
-    server.on("/manual.html", HTTP_GET, handleManualPage);
- 
-    server.on("/EasyHTTP.js", HTTP_GET, handleEasyHTTP);
 
     server.on("/test", HTTP_GET, test);
 <<<<<<< HEAD
@@ -74,7 +71,11 @@ void wifiSetup()
   #pragma endregion
 =======
     server.on("/mode",HTTP_PUT, modeHandle);
-
+    server.on("/rgb", HTTP_PUT, manualHandle);
+    server.on("/rainbowChaser", HTTP_PUT, rainbowchaserHandle);
+    server.on("/flow", HTTP_PUT, flowHandle);
+    server.on("/christmas", HTTP_PUT, christmasHandle);
+    
     server.on(
         "/update", HTTP_POST, []() {
     server.sendHeader("Connection", "close");

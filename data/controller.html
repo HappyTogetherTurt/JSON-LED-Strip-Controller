@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width">
+    <script>
+        class EasyHTTP {
+
+            async put(url, data) {
+
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const resData = await response.json();
+
+                return resData;
+            }
+        }
+        const http = new EasyHTTP;
+        var pressed = false;
+        var modes = ["update", "manual", "breathe", "rainbow_chaser", "flow", "christmas"];
+        function onClickHandle(mode) {
+            http.put("http://192.168.6.35/mode", { "mode": mode })
+                .then(data => console.log(data))
+                .then(err => console.log(err));
+            for (i = 1; i <= 5; i++) {
+                document.getElementById(modes[i]).style.display = "none";
+            }
+            document.getElementById(modes[mode]).style.display = "block";
+            sidenavToggle();
+        }
+
+        function sidenavToggle() {
+            if (this.pressed) {
+                document.getElementById("mySideNav").style.width = "0%";
+                this.pressed = false;
+            }
+            else {
+                document.getElementById("mySideNav").style.width = "55vw";
+                this.pressed = true;
+            }
+        }
+
+        function onSliderChange(value, displayID) {
+            document.getElementById(displayID).innerHTML = value;
+        }
+
+        function oninputSliderRelease(colour, sliderID) {
+            switch (colour) {
+                case 'red':
+                    data = {
+                        'red': parseInt(document.getElementById(sliderID).value, 10),
+                        'green': 256,
+                        'blue': 256
+                    }
+                    break;
+                case 'green':
+                    data = {
+                        'red': 256,
+                        'green': parseInt(document.getElementById(sliderID).value, 10),
+                        'blue': 256
+                    }
+                    break;
+                case 'blue':
+                    data = {
+                        'red': 256,
+                        'green': 256,
+                        'blue': parseInt(document.getElementById(sliderID).value, 10)
+                    }
+                    break;
+                default:
+                    data = {
+                        'red': 200,
+                        'green': 10,
+                        'blue': 1
+                    }
+                    console.log(colour);
+                    break;
+            }
+            http.put("http://192.168.6.35/rgb", data);
+        }
+
+        function onRainbowChaserSliderRelease(speed_percentage) {
+            speed_actual = 100 - speed_percentage;
+            speed_actual = 0.5 * speed_actual;
+            http.put("http://192.168.6.35/rainbowChaser", { "rainbowChaserSpeed": speed_actual });
+        }
+
+        function onFlowSliderRelease(speed_percentage) {
+            speed_actual = 100 - speed_percentage;
+            http.put("http://192.168.6.35/flow", { "flowSpeed": speed_actual });
+        }
+
+        function onChristmasSliderRelease(speed_percentage) {
+            speed_actual = 100 - speed_percentage;
+            speed_actual = 2 * speed_actual;
+            http.put("http://192.168.6.35/christmas", { "christmasSpeed": speed_actual });
+        }
+    </script>
+    <title>Controller</title>
+</head>
+
+<body>
+    <style>
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: rgb(228, 228, 228);
+            overflow-x: hidden;
+            transition: 0.5s;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0%;
+            padding-left: 0%;
+        }
+
+        li {
+            padding-top: 1vw;
+            padding-bottom: 1vw;
+        }
+
+        .sidenav button {
+            background-color: #2080da;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 7vw;
+            width: 100%;
+            height: 20vw;
+        }
+
+        .floating button {
+            position: fixed;
+            width: 20vw;
+            height: 20vw;
+            border-radius: 80%;
+            bottom: 5%;
+            right: 5%;
+            font-size: 5vw;
+        }
+
+        .menu {
+            display: none;
+            width: 70vw;
+            margin: auto;
+            text-align: right;
+        }
+
+        .inputSlider {
+            width: 95%;
+        }
+
+        .sliderDisplayPair {
+            margin-bottom: 17vh;
+        }
+
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #0ccc5c;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .breatheswitch {
+            text-align: left;
+            padding-bottom: 15vw;
+        }
+    </style>
+    <div class="sidenav" id=mySideNav>
+        <ul>
+            <li>
+                <button onclick="onClickHandle(1)">
+                    Manual
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(2)">
+                    Breathe
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(3)">
+                    Rainbow Chaser
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(4)">
+                    Flow
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(5)">
+                    Christmas
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="floating">
+        <button onclick="sidenavToggle()">
+            Menu
+        </button>
+    </div>
+    <div id="manual" class="menu">
+        <h1 style="text-align: center;">Manual</h1>
+        <div class="sliderDisplayPair">
+            <p>Red:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualRedSlider"
+                oninput="onSliderChange(value, 'manualRedDisplay')"
+                ontouchend="oninputSliderRelease('red', 'manualRedSlider')"
+                onmouseup="oninputSliderRelease('red', 'manualRedSlider')">
+            <p id="manualRedDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Green:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualGreenSlider"
+                oninput="onSliderChange(value, 'manualGreenDisplay')"
+                ontouchend="oninputSliderRelease('green', 'manualGreenSlider')"
+                onmouseup="oninputSliderRelease('green', 'manualGreenSlider')">
+            <p id="manualGreenDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Blue:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualBlueSlider"
+                oninput="onSliderChange(value, 'manualBlueDisplay')"
+                ontouchend="oninputSliderRelease('blue', 'manualBlueSlider')"
+                onmouseup="oninputSliderRelease('blue', 'manualBlueSlider')">
+            <p id="manualBlueDisplay">0</p>
+        </div>
+        <div class="breatheswitch">
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+    <div id="breathe" class="menu">
+        <h1>Breathe</h1>
+    </div>
+    <div id="rainbow_chaser" class="menu">
+        <h1 style="text-align: center;">Rainbow Chaser</h1>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="rainbowChaserSlider"
+            oninput="onSliderChange(value, 'rainbowChaserDisplay')" ontouchend="onRainbowChaserSliderRelease(value)"
+            onmouseup="onRainbowChaserSliderRelease(value)">
+        <p id="rainbowChaserDisplay">1</p>
+    </div>
+    <div id="flow" class="menu">
+        <h1 style="text-align: center;">Flow</h1>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="flowSlider"
+            oninput="onSliderChange(value, 'flowDisplay')" ontouchend="onFlowSliderRelease(value)"
+            onmouseup="onFlowSliderRelease(value)">
+        <p id="flowDisplay">1</p>
+    </div>
+    <div id="christmas" class="menu">
+        <h1 style="text-align: center;">Christmas</h1>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="christmasSlider"
+            oninput="onSliderChange(value, 'christmasDisplay')" ontouchend="onChristmasSliderRelease(value)"
+            onmouseup="onChristmasSliderRelease(value)">
+        <p id="christmasDisplay">1</p>
+    </div>
+</body>
