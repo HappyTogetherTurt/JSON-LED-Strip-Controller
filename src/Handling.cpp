@@ -47,7 +47,7 @@ void handleEasyHTTP()
 void test()
 {
     server.sendHeader("Connection", "close");
-    String _ = String(modeVar);
+    String _ = String(data[0]) + String(data[1]) + String(data[2]) + String(data[3]) + String(data[4]);
     server.send(200, "text/plain", _);
     for (unsigned int i = 0; i <= 9; i++)
     {
@@ -86,9 +86,18 @@ void manualHandle()
     StaticJsonDocument<96> doc;
     deserializeJson(doc, server.arg("plain"));
 
-    if (doc["red"] != 256) {data[MANUAL_RED] = doc["red"];}
-    if (doc["green"] != 256) {data[MANUAL_GREEN] = doc["green"];}
-    if (doc["blue"] != 256) {data[MANUAL_BLUE] = doc["blue"];}
+    if (doc["red"] != 256)
+    {
+        data[MANUAL_RED] = doc["red"];
+    }
+    if (doc["green"] != 256)
+    {
+        data[MANUAL_GREEN] = doc["green"];
+    }
+    if (doc["blue"] != 256)
+    {
+        data[MANUAL_BLUE] = doc["blue"];
+    }
 }
 
 void rainbowchaserHandle()
@@ -96,7 +105,7 @@ void rainbowchaserHandle()
     server.sendHeader("Connection", "close");
     server.send(200, "text/plain", "OK");
 
-    StaticJsonDocument<25> doc;
+    StaticJsonDocument<40> doc;
     deserializeJson(doc, server.arg("plain"));
 
     data[RAINBOW_CHASER_DELAY] = doc["rainbowChaserSpeed"];
@@ -118,7 +127,7 @@ void christmasHandle()
     server.sendHeader("Connection", "close");
     server.send(200, "text/plain", "OK");
 
-    StaticJsonDocument<25> doc;
+    StaticJsonDocument<40> doc;
     deserializeJson(doc, server.arg("plain"));
 
     data[CHRISTMAS_DELAY] = doc["christmasSpeed"];
