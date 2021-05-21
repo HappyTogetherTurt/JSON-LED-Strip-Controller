@@ -7,35 +7,36 @@
 #define DATA_PIN 4
 
 void ledSetup();
-void blink();
+void blink(int blinkdelay);
 void fill();
-void ledHandling(void* parameter);
+void ledHandling(void *parameter);
 
 extern int data[10];
+extern CRGB leds[NUM_LEDS];
 
-enum Mode 
+enum Mode
 {
+
 UPDATE,
 MANUAL,
 BREATHE,
 RAINBOW_CHASER,
 FLOW,
 CHRISTMAS
+
 };
 
 extern Mode modeVar;
 
 enum Address
 {
-MODE_ADDRESS,
-RED_ADDRESS,
-GREEN_ADDRESS,
-BLUE_ADDRESS
+    MODE_ADDRESS,
+    RED_ADDRESS,
+    GREEN_ADDRESS,
+    BLUE_ADDRESS
 };
 
-
 //Mode-specific enums
-
 
 enum ManualEnum
 {
@@ -43,29 +44,30 @@ MANUAL_RED,
 MANUAL_GREEN,
 MANUAL_BLUE,
 MANUAL_BREATHE
+
 };
 
 enum BreatheEnum
 {
-BREATHE_RED,
-BREATHE_GREEN,
-BREATHE_BLUE,
-BREATHE_DELAY
+    BREATHE_RED,
+    BREATHE_GREEN,
+    BREATHE_BLUE,
+    BREATHE_SPEED
 };
 
 enum RainbowChaserEnum
 {
-RAINBOW_CHASER_DELAY
+    RAINBOW_CHASER_SPEED
 };
 
 enum FlowEnum
 {
-FLOW_DELAY
+    FLOW_SPEED
 };
 
 enum ChristmasEnum
 {
-CHRISTMAS_DELAY
+    CHRISTMAS_SPEED
 };
 
 #endif

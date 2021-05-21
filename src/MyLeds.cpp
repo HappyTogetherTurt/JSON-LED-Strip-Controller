@@ -9,7 +9,10 @@ Mode modeVar;
 
 void ledSetup()
 {
+<<<<<<< HEAD
+=======
     modeVar = (Mode)EEPROM.read(MODE_ADDRESS);
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 }
 
@@ -43,6 +46,17 @@ void ledHandling(void *parameter)
     switch (EEPROM.read(MODE_ADDRESS))
     {
 
+<<<<<<< HEAD
+    case UPDATE:
+        for (int i = 0; i <= 299; i++)
+        {
+            leds[i].setRGB(0, 0, 255);
+        }
+        FastLED.show();
+        for (;;)
+        {
+            blink(200);
+=======
     case MANUAL:
         data[MANUAL_RED] = EEPROM.read(RED_ADDRESS);
         data[MANUAL_GREEN] = EEPROM.read(GREEN_ADDRESS);
@@ -119,9 +133,27 @@ void ledHandling(void *parameter)
                     break;
                 }
             }
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
+        }
+
+<<<<<<< HEAD
+    case MANUAL:
+        data[MANUAL_RED] = 0;
+        data[MANUAL_GREEN] = 0;
+        data[MANUAL_BLUE] = 0;
+        for (;;)
+        {
+            for (int i = 0; i <= 299; i++)
+            {
+                leds[i].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
+                FastLED.show();
+                vTaskDelay(1);
+            }
         }
         break;
 
+=======
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
     case BREATHE:
         data[BREATHE_RED] = EEPROM.read(RED_ADDRESS);
         data[BREATHE_GREEN] = EEPROM.read(GREEN_ADDRESS);
@@ -173,14 +205,22 @@ void ledHandling(void *parameter)
                 leds[i - 1] = CRGB::Black;
                 leds[i].setHue(i);
                 FastLED.show();
+<<<<<<< HEAD
+                vTaskDelay(data[RAINBOW_CHASER_SPEED]);
+=======
                 vTaskDelay(data[RAINBOW_CHASER_DELAY]);
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
             }
             for (int i = 299; i >= 0; i--)
             {
                 leds[i + 1] = CRGB::Black;
                 leds[i].setHue(i);
                 FastLED.show();
+<<<<<<< HEAD
+                vTaskDelay(data[RAINBOW_CHASER_SPEED]);
+=======
                 vTaskDelay(data[RAINBOW_CHASER_DELAY]);
+>>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
             }
         }
         break;
@@ -196,7 +236,7 @@ void ledHandling(void *parameter)
                     leds[j].setHue(i);
                 }
                 FastLED.show();
-                vTaskDelay(data[FLOW_DELAY]);
+                vTaskDelay(data[FLOW_SPEED]);
             }
         }
         break;
@@ -217,7 +257,7 @@ void ledHandling(void *parameter)
                 }
             }
             FastLED.show();
-            vTaskDelay(data[CHRISTMAS_DELAY]);
+            vTaskDelay(data[CHRISTMAS_SPEED]);
 
             for (int i = 0; i <= 299; i++)
             {
@@ -231,7 +271,7 @@ void ledHandling(void *parameter)
                 }
             }
             FastLED.show();
-            vTaskDelay(data[CHRISTMAS_DELAY]);
+            vTaskDelay(data[CHRISTMAS_SPEED]);
         }
 
         break;

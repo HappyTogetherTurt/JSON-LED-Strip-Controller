@@ -46,6 +46,7 @@ void handleEasyHTTP()
 
 void test()
 {
+    String str = String(EEPROM.read(MODE_ADDRESS));
     server.sendHeader("Connection", "close");
     String _ = String(data[0]) + String(data[1]) + String(data[2]) + String(data[3]) + String(data[4]);
     server.send(200, "text/plain", _);
@@ -108,7 +109,7 @@ void rainbowchaserHandle()
     StaticJsonDocument<40> doc;
     deserializeJson(doc, server.arg("plain"));
 
-    data[RAINBOW_CHASER_DELAY] = doc["rainbowChaserSpeed"];
+    data[RAINBOW_CHASER_SPEED] = doc["rainbowChaserSpeed"];
 }
 
 void flowHandle()
@@ -119,7 +120,7 @@ void flowHandle()
     StaticJsonDocument<25> doc;
     deserializeJson(doc, server.arg("plain"));
 
-    data[FLOW_DELAY] = doc["flowSpeed"];
+    data[FLOW_SPEED] = doc["flowSpeed"];
 }
 
 void christmasHandle()
