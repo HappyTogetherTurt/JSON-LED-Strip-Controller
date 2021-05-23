@@ -26,7 +26,7 @@ void blink(int blinkDelay)
 
 void fill(int r, int g, int b, bool show)
 {
-    for (int i = 0; i <= 299; i++)
+    for (int i = 0; i <= NUM_LEDS - 1; i++)
     {
         leds[i].setRGB(r, g, b);
     }
@@ -48,7 +48,7 @@ void ledHandling(void *parameter)
 
 <<<<<<< HEAD
     case UPDATE:
-        for (int i = 0; i <= 299; i++)
+        for (int i = 0; i <= NUM_LEDS - 1; i++)
         {
             leds[i].setRGB(0, 0, 255);
         }
@@ -65,7 +65,7 @@ void ledHandling(void *parameter)
         {
             for (;;)
             {
-                for (int i = 0; i <= 299; i++)
+                for (int i = 0; i <= NUM_LEDS - 1; i++)
                 {
                     if (data[MANUAL_BREATHE])
                     {
@@ -143,7 +143,7 @@ void ledHandling(void *parameter)
         data[MANUAL_BLUE] = 0;
         for (;;)
         {
-            for (int i = 0; i <= 299; i++)
+            for (int i = 0; i <= NUM_LEDS - 1; i++)
             {
                 leds[i].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
                 FastLED.show();
@@ -158,7 +158,7 @@ void ledHandling(void *parameter)
         data[BREATHE_RED] = EEPROM.read(RED_ADDRESS);
         data[BREATHE_GREEN] = EEPROM.read(GREEN_ADDRESS);
         data[BREATHE_BLUE] = EEPROM.read(BLUE_ADDRESS);
-        for (int i = 0; i <= 299; i++)
+        for (int i = 0; i <= NUM_LEDS - 1; i++)
         {
             leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
         }
@@ -200,7 +200,7 @@ void ledHandling(void *parameter)
         data[RAINBOW_CHASER_DELAY] = 4;
         for (;;)
         {
-            for (int i = 0; i <= 299; i++)
+            for (int i = 0; i <= NUM_LEDS - 1; i++)
             {
                 leds[i - 1] = CRGB::Black;
                 leds[i].setHue(i);
@@ -211,7 +211,7 @@ void ledHandling(void *parameter)
                 vTaskDelay(data[RAINBOW_CHASER_DELAY]);
 >>>>>>> 04c89170e6d9fe92b9779a399efd53a15a70db11
             }
-            for (int i = 299; i >= 0; i--)
+            for (int i = NUM_LEDS - 1; i >= 0; i--)
             {
                 leds[i + 1] = CRGB::Black;
                 leds[i].setHue(i);
@@ -231,7 +231,7 @@ void ledHandling(void *parameter)
         {
             for (int i = 0; i <= 255; i++)
             {
-                for (int j = 0; j <= 299; j++)
+                for (int j = 0; j <= NUM_LEDS - 1; j++)
                 {
                     leds[j].setHue(i);
                 }
@@ -245,7 +245,7 @@ void ledHandling(void *parameter)
         data[CHRISTMAS_DELAY] = 140;
         for (;;)
         {
-            for (int i = 0; i <= 299; i++)
+            for (int i = 0; i <= NUM_LEDS - 1; i++)
             {
                 if (i % 2 == 0)
                 {
@@ -259,7 +259,7 @@ void ledHandling(void *parameter)
             FastLED.show();
             vTaskDelay(data[CHRISTMAS_SPEED]);
 
-            for (int i = 0; i <= 299; i++)
+            for (int i = 0; i <= NUM_LEDS - 1; i++)
             {
                 if (i % 2 == 1)
                 {
