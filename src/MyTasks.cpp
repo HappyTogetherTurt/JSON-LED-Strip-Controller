@@ -8,15 +8,15 @@ TaskHandle_t LED;
 
 void startLedTask()
 {
-  xTaskCreatePinnedToCore(
-      ledHandling,    // Function that should be called
-      "LED Handling", // Name of the task (for debugging)
-      5000,           // Stack size (bytes)
-      NULL,           // Parameter to pass
-      1,              // Task priority
-      &LED,           // Task Handle
-      1               //Core
-  );
+    xTaskCreatePinnedToCore(
+        ledHandling,        // Function that should be called
+        "LED Handling", // Name of the task (for debugging)
+        5000,           // Stack size (bytes)
+        NULL,           // Parameter to pass
+        1,              // Task priority
+        &LED,           // Task Handle
+        1               //Core
+    );
 }
 
 void restartIntoMode(int mode)
