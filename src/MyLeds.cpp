@@ -141,28 +141,28 @@ void ledHandling(void *parameter)
         {
             for (int i = 0; i <= 128; i++)
             {
-                leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                for (int j = 0; j <= NUM_LEDS - 1; j++) {leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);}
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(5 / portTICK_PERIOD_MS);
             }
             for (int i = 128; i <= 255; i++)
             {
-                leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                for (int j = 0; j <= NUM_LEDS - 1; j++) {leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);}
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(1 / portTICK_PERIOD_MS);
             }
             for (int i = 255; i >= 128; i--)
             {
-                leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                for (int j = 0; j <= NUM_LEDS - 1; j++) {leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);}
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(1 / portTICK_PERIOD_MS);
             }
             for (int i = 128; i >= 0; i--)
             {
-                leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                for (int j = 0; j <= NUM_LEDS - 1; j++) {leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);}
                 FastLED.setBrightness(i);
                 FastLED.show();
                 vTaskDelay(5 / portTICK_PERIOD_MS);
