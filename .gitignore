@@ -4,4 +4,4 @@
 .vscode/launch.json
 .vscode/ipch
 include/WifiCredentials.h
-data/thumbs.db
+data/Thumbs.db
