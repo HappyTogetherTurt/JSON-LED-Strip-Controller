@@ -1,8 +1,8 @@
 #ifndef SERVERDECLARATION
 #define SERVERDECLARATION
 
-#include <WebServer.h>
+#include <ESPAsyncWebServer.h>
 
-extern WebServer server;
+extern AsyncWebServer server;
 
 #endif

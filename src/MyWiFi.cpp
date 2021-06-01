@@ -1,10 +1,34 @@
-#include <WebServer.h>
+#include <ESPAsyncWebServer.h>
+#include <AsyncTCP.h>
 #include <Update.h>
 #include <SPIFFS.h>
+#include <ArduinoJson.h>
+#include <Preferences.h>
 
 #include "MyWifi.h"
 #include "ServerDeclaration.h"
-#include "Handling.h"
+
+#include "MyLeds.h"
+
+String ip2Str(IPAddress ip)
+{
+    String s = "";
+    for (int i = 0; i < 4; i++)
+    {
+        s += i ? "." + String(ip[i]) : String(ip[i]);
+    }
+    return s;
+}
+
+String processor(const String &var)
+{
+    Serial.println(var);
+    if (var == "IP")
+    {
+        return ip2Str(WiFi.localIP());
+    }
+    return String();
+}
 
 void wifiSetup()
 {
@@ -31,16 +55,140 @@ void wifiSetup()
 
     server.begin();
 
-    server.on("/", HTTP_GET, handleIndexPage);
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
+                  AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/controller.html", String(), false, processor);
+                  response->addHeader("Access-Control-Allow-Origin", "*");
+                  request->send(response);
+              });
 
-    server.on("/test", HTTP_GET, test);
-    server.on("/mode",HTTP_PUT, modeHandle);
-    server.on("/rgb", HTTP_PUT, manualHandle);
-    server.on("/rainbowChaser", HTTP_PUT, rainbowchaserHandle);
-    server.on("/flow", HTTP_PUT, flowHandle);
-    server.on("/christmas", HTTP_PUT, christmasHandle);
-    
+    server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(SPIFFS, "/favicon.ico");
+    });
+
+    server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
+                  request->send_P(200, "application/json", "{\"status\":\"TEST_RECIEVED\"}");
+                  Serial.println(preferences.getInt("red"));
+                  Serial.println(preferences.getInt("green"));
+                  Serial.println(preferences.getInt("blue"));
+              });
+
     server.on(
+        "/mode", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        {
+            AsyncWebServerResponse *response = request->beginResponse(200, "application/json", "{\"status\":\"MODE_RECIEVED\"}");
+            response->addHeader("Access-Control-Allow-Origin", "*");
+            request->send(response);
+            char json[len + 1];
+            for (size_t i = 0; i < len; i++)
+            {
+                json[i] = (char)data[i];
+            }
+            json[len] = '\0';
+            StaticJsonDocument<20> doc;
+            deserializeJson(doc, json);
+            preferences.putInt("mode", doc["mode"]);
+            preferences.putInt("red", MYLEDS::data[MANUAL_RED]);
+            preferences.putInt("green", MYLEDS::data[MANUAL_GREEN]);
+            preferences.putInt("blue", MYLEDS::data[MANUAL_BLUE]);
+            preferences.end();
+            ESP.restart();
+        });
+
+    server.on(
+        "/rgb", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        {
+            request->send_P(200, "application/json", "{\"status\":\"RGB_RECIEVED\"}");
+            char json[len + 1];
+            for (size_t i = 0; i < len; i++)
+            {
+                json[i] = (char)data[i];
+            }
+            json[len] = '\0';
+            StaticJsonDocument<50> doc;
+            deserializeJson(doc, json);
+
+            if (doc["red"] != 256)
+            {
+                MYLEDS::data[MANUAL_RED] = doc["red"];
+            }
+            if (doc["green"] != 256)
+            {
+                MYLEDS::data[MANUAL_GREEN] = doc["green"];
+            }
+            if (doc["blue"] != 256)
+            {
+                MYLEDS::data[MANUAL_BLUE] = doc["blue"];
+            }
+        });
+
+        server.on(
+        "/breathe", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        {
+            request->send_P(200, "application/json", "{\"status\":\"BREATHE_RECIEVED\"}");
+            char json[len + 1];
+            for (size_t i = 0; i < len; i++)
+            {
+                json[i] = (char)data[i];
+            }
+            json[len] = '\0';
+            StaticJsonDocument<25> doc;
+            deserializeJson(doc, json);
+
+            MYLEDS::data[BREATHE_DELAY] = doc["breatheSpeed"];
+        });
+
+    server.on(
+        "/chaser", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        {
+            request->send_P(200, "application/json", "{\"status\":\"CHASER_RECIEVED\"}");
+            char json[len + 1];
+            for (size_t i = 0; i < len; i++)
+            {
+                json[i] = (char)data[i];
+            }
+            json[len] = '\0';
+            StaticJsonDocument<25> doc;
+            deserializeJson(doc, json);
+
+            MYLEDS::data[CHASER_DELAY] = doc["chaserSpeed"];
+        });
+
+    server.on(
+        "/flow", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        {
+            request->send_P(200, "application/json", "{\"status\":\"FLOW_RECIEVED\"}");
+            char json[len + 1];
+            for (size_t i = 0; i < len; i++)
+            {
+                json[i] = (char)data[i];
+            }
+            json[len] = '\0';
+            StaticJsonDocument<25> doc;
+            deserializeJson(doc, json);
+
+            MYLEDS::data[FLOW_DELAY] = doc["flowSpeed"];
+        });
+
+    server.on(
+        "/ember", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        {
+            request->send_P(200, "application/json", "{\"status\":\"EMBER_RECIEVED\"}");
+            char json[len + 1];
+            for (size_t i = 0; i < len; i++)
+            {
+                json[i] = (char)data[i];
+            }
+            json[len] = '\0';
+            StaticJsonDocument<25> doc;
+            deserializeJson(doc, json);
+
+            MYLEDS::data[EMBER_DELAY] = doc["emberSpeed"];
+        });
+
+    /*server.on(
         "/update", HTTP_POST, []() {
     server.sendHeader("Connection", "close");
     server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
@@ -71,5 +219,5 @@ void wifiSetup()
                 {
                     Update.printError(Serial);
                 }
-            } });
+            } });*/
 }

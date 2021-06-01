@@ -1,18 +1,18 @@
-#ifndef HANDLING
+/*#ifndef HANDLING
 #define HANDLING
 
 void test();
 
 void handleIndexPage();
-/*void handleManualPage();
+void handleManualPage();
 
-void handleEasyHTTP();*/
+void handleEasyHTTP();
 
 void modeHandle();
 void manualHandle();
 void breatheHandle();
-void rainbowchaserHandle();
+void chaserHandle();
 void flowHandle();
-void christmasHandle();
+void emberHandle();
 
-#endif
+#endif*/

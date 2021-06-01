@@ -1,9 +1,9 @@
-#include <Arduino.h>
+/*#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
-#include <EEPROM.h>
 
-#include "Handling.h"
+
+
 #include "ServerDeclaration.h"
 #include "MyLeds.h"
 
@@ -18,7 +18,7 @@ void handleIndexPage()
     }
     server.sendHeader("Connection", "close");
     server.send(200, "text/html", fileAsString);
-}
+}*/
 
 /*void handleManualPage()
 {
@@ -44,7 +44,7 @@ void handleEasyHTTP()
     server.send(200, "text/html", fileAsString);
 }*/
 
-void test()
+/*void test()
 {
     server.sendHeader("Connection", "close");
     String _ = String(data[0]) + String(data[1]) + String(data[2]) + String(data[3]) + String(data[4]);
@@ -81,7 +81,7 @@ void modeHandle()
 void manualHandle()
 {
     server.sendHeader("Connection", "close");
-    server.send(200, "text/plain", "OK");
+    server.send(200, "application/json", "{\"status\":\"OK\"}");
 
     StaticJsonDocument<96> doc;
     deserializeJson(doc, server.arg("plain"));
@@ -100,21 +100,21 @@ void manualHandle()
     }
 }
 
-void rainbowchaserHandle()
+void chaserHandle()
 {
     server.sendHeader("Connection", "close");
-    server.send(200, "text/plain", "OK");
+    server.send(200, "application/json", "{\"status\":\"OK\"}");
 
     StaticJsonDocument<40> doc;
     deserializeJson(doc, server.arg("plain"));
 
-    data[RAINBOW_CHASER_DELAY] = doc["rainbowChaserSpeed"];
+    data[CHASER_DELAY] = doc["chaserSpeed"];
 }
 
 void flowHandle()
 {
     server.sendHeader("Connection", "close");
-    server.send(200, "text/plain", "OK");
+    server.send(200, "application/json", "{\"status\":\"OK\"}");
 
     StaticJsonDocument<25> doc;
     deserializeJson(doc, server.arg("plain"));
@@ -122,13 +122,16 @@ void flowHandle()
     data[FLOW_DELAY] = doc["flowSpeed"];
 }
 
-void christmasHandle()
+void emberHandle()
 {
     server.sendHeader("Connection", "close");
-    server.send(200, "text/plain", "OK");
+    server.send(200, "application/json", "{\"status\":\"OK\"}");
 
     StaticJsonDocument<40> doc;
     deserializeJson(doc, server.arg("plain"));
 
-    data[CHRISTMAS_DELAY] = doc["christmasSpeed"];
-}
+    float temp = doc["emberSpeed"];
+    temp = temp / 100;
+    temp = temp * 2;
+    data[EMBER_DELAY] = (int)temp;
+}*/

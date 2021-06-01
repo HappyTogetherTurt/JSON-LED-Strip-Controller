@@ -1,15 +1,17 @@
 #include <FastLED.h>
-#include <EEPROM.h>
+
+#include <Preferences.h>
 
 #include "MyLeds.h"
 
 CRGB leds[NUM_LEDS];
 int data[10];
 Mode modeVar;
+Preferences preferences;
 
 void ledSetup()
 {
-    modeVar = (Mode)EEPROM.read(MODE_ADDRESS);
+    modeVar = (Mode) preferences.getInt("mode");
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 }
 
@@ -40,7 +42,7 @@ void ledHandling(void *parameter)
         leds[i].setRGB(0, 0, 0);
     }
 
-    switch (EEPROM.read(MODE_ADDRESS))
+    switch (preferences.getInt("mode"))
     {
 
     case UPDATE:
@@ -50,9 +52,9 @@ void ledHandling(void *parameter)
         }
 
     case MANUAL:
-        data[MANUAL_RED] = EEPROM.read(RED_ADDRESS);
-        data[MANUAL_GREEN] = EEPROM.read(GREEN_ADDRESS);
-        data[MANUAL_BLUE] = EEPROM.read(BLUE_ADDRESS);
+        data[MANUAL_RED] = preferences.getInt("red");
+        data[MANUAL_GREEN] = preferences.getInt("green");
+        data[MANUAL_BLUE] = preferences.getInt("blue");
         for (;;)
         {
             for (;;)
@@ -129,9 +131,10 @@ void ledHandling(void *parameter)
         break;
 
     case BREATHE:
-        data[BREATHE_RED] = EEPROM.read(RED_ADDRESS);
-        data[BREATHE_GREEN] = EEPROM.read(GREEN_ADDRESS);
-        data[BREATHE_BLUE] = EEPROM.read(BLUE_ADDRESS);
+        data[MANUAL_RED] = preferences.getInt("red");
+        data[MANUAL_GREEN] = preferences.getInt("green");
+        data[MANUAL_BLUE] = preferences.getInt("blue");
+        data[BREATHE_DELAY] = 5;
         for (int i = 0; i <= NUM_LEDS - 1; i++)
         {
             leds[i].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
@@ -139,54 +142,69 @@ void ledHandling(void *parameter)
         FastLED.show();
         for (;;)
         {
-            for (int i = 0; i <= 128; i++)
+            for (int i = 0; i <= 150; i++)
             {
-                for (int j = 0; j <= NUM_LEDS - 1; j++) {leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);}
+                for (int j = 0; j <= NUM_LEDS - 1; j++)
+                {
+                    leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                }
                 FastLED.setBrightness(i);
                 FastLED.show();
-                vTaskDelay(5 / portTICK_PERIOD_MS);
+                vTaskDelay(data[BREATHE_DELAY]);
             }
-            for (int i = 128; i <= 255; i++)
+            for (int i = 150; i <= 255; i++)
             {
-                for (int j = 0; j <= NUM_LEDS - 1; j++) {leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);}
+                for (int j = 0; j <= NUM_LEDS - 1; j++)
+                {
+                    leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                }
                 FastLED.setBrightness(i);
                 FastLED.show();
-                vTaskDelay(1 / portTICK_PERIOD_MS);
+                vTaskDelay(data[BREATHE_DELAY] / 2);
             }
-            for (int i = 255; i >= 128; i--)
+            for (int i = 255; i >= 150; i--)
             {
-                for (int j = 0; j <= NUM_LEDS - 1; j++) {leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);}
+                for (int j = 0; j <= NUM_LEDS - 1; j++)
+                {
+                    leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                }
                 FastLED.setBrightness(i);
                 FastLED.show();
-                vTaskDelay(1 / portTICK_PERIOD_MS);
+                vTaskDelay(data[BREATHE_DELAY] / 2);
             }
-            for (int i = 128; i >= 0; i--)
+            for (int i = 150; i >= 0; i--)
             {
-                for (int j = 0; j <= NUM_LEDS - 1; j++) {leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);}
+                for (int j = 0; j <= NUM_LEDS - 1; j++)
+                {
+                    leds[j].setRGB(data[BREATHE_RED], data[BREATHE_GREEN], data[BREATHE_BLUE]);
+                }
                 FastLED.setBrightness(i);
                 FastLED.show();
-                vTaskDelay(5 / portTICK_PERIOD_MS);
+                vTaskDelay(data[BREATHE_DELAY]);
             }
         }
         break;
 
-    case RAINBOW_CHASER:
-        data[RAINBOW_CHASER_DELAY] = 4;
+    case CHASER:
+        data[MANUAL_RED] = preferences.getInt("red");
+        data[MANUAL_GREEN] = preferences.getInt("green");
+        data[MANUAL_BLUE] = preferences.getInt("blue");
+        data[CHASER_DELAY] = 80;
         for (;;)
         {
             for (int i = 0; i <= NUM_LEDS - 1; i++)
             {
                 leds[i - 1] = CRGB::Black;
-                leds[i].setHue(i);
+                leds[i].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
                 FastLED.show();
-                vTaskDelay(data[RAINBOW_CHASER_DELAY]);
+                vTaskDelay(data[CHASER_DELAY]);
             }
             for (int i = NUM_LEDS - 1; i >= 0; i--)
             {
                 leds[i + 1] = CRGB::Black;
-                leds[i].setHue(i);
+                leds[i].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
                 FastLED.show();
-                vTaskDelay(data[RAINBOW_CHASER_DELAY]);
+                vTaskDelay(data[CHASER_DELAY]);
             }
         }
         break;
@@ -207,40 +225,54 @@ void ledHandling(void *parameter)
         }
         break;
 
-    case CHRISTMAS:
-        data[CHRISTMAS_DELAY] = 140;
+    case EMBER:
+        int emberLit;
+        data[MANUAL_RED] = preferences.getInt("red");
+        data[MANUAL_GREEN] = preferences.getInt("green");
+        data[MANUAL_BLUE] = preferences.getInt("blue");
+        data[EMBER_DELAY] = 1;
+        for (int i = 0; i <= NUM_LEDS - 1; i++)
+        {
+            leds[i].setRGB(0, 0, 0);
+        }
         for (;;)
         {
-            for (int i = 0; i <= NUM_LEDS - 1; i++)
+            int lastEmberLit = emberLit;
+            while (emberLit == lastEmberLit)
             {
-                if (i % 2 == 0)
-                {
-                    leds[i].setRGB(0, 255, 0);
-                }
-                else
-                {
-                    leds[i].setRGB(255, 0, 0);
-                }
+                emberLit = random(NUM_LEDS);
             }
-            FastLED.show();
-            vTaskDelay(data[CHRISTMAS_DELAY]);
 
-            for (int i = 0; i <= NUM_LEDS - 1; i++)
+            for (int i = 0; i <= 128; i++)
             {
-                if (i % 2 == 1)
-                {
-                    leds[i].setRGB(0, 255, 0);
-                }
-                else
-                {
-                    leds[i].setRGB(255, 0, 0);
-                }
+                leds[emberLit].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
+                FastLED.setBrightness(i);
+                FastLED.show();
+                vTaskDelay(data[EMBER_DELAY] * 2);
             }
-            FastLED.show();
-            vTaskDelay(data[CHRISTMAS_DELAY]);
+            for (int i = 128; i <= 255; i++)
+            {
+                leds[emberLit].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
+                FastLED.setBrightness(i);
+                FastLED.show();
+                vTaskDelay(data[EMBER_DELAY]);
+            }
+            for (int i = 255; i >= 128; i--)
+            {
+                leds[emberLit].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
+                FastLED.setBrightness(i);
+                FastLED.show();
+                vTaskDelay(data[EMBER_DELAY]);
+            }
+            for (int i = 128; i >= 0; i--)
+            {
+                leds[emberLit].setRGB(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
+                FastLED.setBrightness(i);
+                FastLED.show();
+                vTaskDelay(data[EMBER_DELAY] * 2);
+            }
+            leds[emberLit].setRGB(0, 0, 0);
         }
-
-        break;
 
     default:
         for (;;)

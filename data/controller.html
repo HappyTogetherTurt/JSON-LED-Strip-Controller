@@ -22,9 +22,9 @@
         }
         const http = new EasyHTTP;
         var pressed = false;
-        var modes = ["update", "manual", "breathe", "rainbow_chaser", "flow", "christmas"];
+        var modes = ["update", "manual", "breathe", "chaser", "flow", "ember"];
         function onClickHandle(mode) {
-            http.put("http://192.168.6.35/mode", { "mode": mode })
+            http.put("http://candle.local/mode", { "mode": mode })
                 .then(data => console.log(data))
                 .then(err => console.log(err));
             for (i = 1; i <= 5; i++) {
@@ -81,27 +81,33 @@
                     console.log(colour);
                     break;
             }
-            http.put("http://192.168.6.35/rgb", data);
+            http.put("http://candle.local/rgb", data);
+        }
+
+        function onBreatheSliderRelease(speed_percentage) {
+            speed_actual = 100 - speed_percentage;
+            speed_actual = speed_actual;
+            http.put("http://candle.local/breathe", { "breatheSpeed": speed_actual });
         }
 
         function onRainbowChaserSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            speed_actual = 0.5 * speed_actual;
-            http.put("http://192.168.6.35/rainbowChaser", { "rainbowChaserSpeed": speed_actual });
+            speed_actual = 0.25 * speed_actual;
+            http.put("http://candle.local/chaser", { "chaserSpeed": speed_actual });
         }
 
         function onFlowSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            http.put("http://192.168.6.35/flow", { "flowSpeed": speed_actual });
+            http.put("http://candle.local/flow", { "flowSpeed": speed_actual });
         }
 
-        function onChristmasSliderRelease(speed_percentage) {
+        function onEmberSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            speed_actual = 2 * speed_actual;
-            http.put("http://192.168.6.35/christmas", { "christmasSpeed": speed_actual });
+            http.put("http://candle.local/ember", { "emberSpeed": speed_actual });
         }
     </script>
     <title>Controller</title>
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
 </head>
 
 <body>
@@ -147,6 +153,9 @@
             bottom: 5%;
             right: 5%;
             font-size: 5vw;
+            text-align: center;
+            background-color: #2080da;
+            color: white;
         }
 
         .menu {
@@ -161,75 +170,11 @@
         }
 
         .sliderDisplayPair {
-            margin-bottom: 17vh;
+            margin-bottom: 3vh;
         }
 
-        /* The switch - the box around the slider */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-
-        /* Hide default HTML checkbox */
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        /* The slider */
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-        }
-
-        input:checked+.slider {
-            background-color: #0ccc5c;
-        }
-
-        input:focus+.slider {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked+.slider:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
-
-        /* Rounded sliders */
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-        .breatheswitch {
-            text-align: left;
-            padding-bottom: 15vw;
+        .smallSliderDisplayPair {
+            margin-bottom: 10vh;
         }
     </style>
     <div class="sidenav" id=mySideNav>
@@ -246,7 +191,7 @@
             </li>
             <li>
                 <button onclick="onClickHandle(3)">
-                    Rainbow Chaser
+                    Chaser
                 </button>
             </li>
             <li>
@@ -256,7 +201,7 @@
             </li>
             <li>
                 <button onclick="onClickHandle(5)">
-                    Christmas
+                    Ember
                 </button>
             </li>
         </ul>
@@ -268,7 +213,7 @@
     </div>
     <div id="manual" class="menu">
         <h1 style="text-align: center;">Manual</h1>
-        <div class="sliderDisplayPair">
+        <div class="smallSliderDisplayPair">
             <p>Red:</p>
             <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualRedSlider"
                 oninput="onSliderChange(value, 'manualRedDisplay')"
@@ -276,7 +221,7 @@
                 onmouseup="oninputSliderRelease('red', 'manualRedSlider')">
             <p id="manualRedDisplay">0</p>
         </div>
-        <div class="sliderDisplayPair">
+        <div class="smallSliderDisplayPair">
             <p>Green:</p>
             <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualGreenSlider"
                 oninput="onSliderChange(value, 'manualGreenDisplay')"
@@ -284,7 +229,7 @@
                 onmouseup="oninputSliderRelease('green', 'manualGreenSlider')">
             <p id="manualGreenDisplay">0</p>
         </div>
-        <div class="sliderDisplayPair">
+        <div class="smallSliderDisplayPair">
             <p>Blue:</p>
             <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualBlueSlider"
                 oninput="onSliderChange(value, 'manualBlueDisplay')"
@@ -292,35 +237,109 @@
                 onmouseup="oninputSliderRelease('blue', 'manualBlueSlider')">
             <p id="manualBlueDisplay">0</p>
         </div>
-        <div class="breatheswitch">
-            <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-            </label>
-        </div>
     </div>
     <div id="breathe" class="menu">
-        <h1>Breathe</h1>
+        <h1 style="text-align: center;">Breathe</h1>
+        <p>Breathe Speed</p>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="breatheSlider"
+            oninput="onSliderChange(value, 'breatheDisplay')" ontouchend="onBreatheSliderRelease(value)"
+            onmouseup="onBreatheSliderRelease(value)">
+        <p id="breatheDisplay">1</p>
+        <div class="sliderDisplayPair">
+            <p>Red:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="breatheRedSlider"
+                oninput="onSliderChange(value, 'breatheRedDisplay')"
+                ontouchend="oninputSliderRelease('red', 'breatheRedSlider')"
+                onmouseup="oninputSliderRelease('red', 'breatheRedSlider')">
+            <p id="breatheRedDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Green:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="breatheGreenSlider"
+                oninput="onSliderChange(value, 'breatheGreenDisplay')"
+                ontouchend="oninputSliderRelease('green', 'breatheGreenSlider')"
+                onmouseup="oninputSliderRelease('green', 'breatheGreenSlider')">
+            <p id="breatheGreenDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Blue:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="breatheBlueSlider"
+                oninput="onSliderChange(value, 'breatheBlueDisplay')"
+                ontouchend="oninputSliderRelease('blue', 'breatheBlueSlider')"
+                onmouseup="oninputSliderRelease('blue', 'breatheBlueSlider')">
+            <p id="breatheBlueDisplay">0</p>
+        </div>
     </div>
-    <div id="rainbow_chaser" class="menu">
-        <h1 style="text-align: center;">Rainbow Chaser</h1>
-        <input type="range" min="1" max="100" value="1" class="inputSlider" id="rainbowChaserSlider"
-            oninput="onSliderChange(value, 'rainbowChaserDisplay')" ontouchend="onRainbowChaserSliderRelease(value)"
+    <div id="chaser" class="menu">
+        <h1 style="text-align: center;">Chaser</h1>
+        <p>Chaser Speed</p>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="chaserSlider"
+            oninput="onSliderChange(value, 'chaserDisplay')" ontouchend="onRainbowChaserSliderRelease(value)"
             onmouseup="onRainbowChaserSliderRelease(value)">
-        <p id="rainbowChaserDisplay">1</p>
+        <p id="chaserDisplay">1</p>
+        <div class="sliderDisplayPair">
+            <p>Red:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="chaserRedSlider"
+                oninput="onSliderChange(value, 'chaserRedDisplay')"
+                ontouchend="oninputSliderRelease('red', 'chaserRedSlider')"
+                onmouseup="oninputSliderRelease('red', 'chaserRedSlider')">
+            <p id="chaserRedDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Green:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="chaserGreenSlider"
+                oninput="onSliderChange(value, 'chaserGreenDisplay')"
+                ontouchend="oninputSliderRelease('green', 'chaserGreenSlider')"
+                onmouseup="oninputSliderRelease('green', 'chaserGreenSlider')">
+            <p id="chaserGreenDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Blue:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="chaserBlueSlider"
+                oninput="onSliderChange(value, 'chaserBlueDisplay')"
+                ontouchend="oninputSliderRelease('blue', 'chaserBlueSlider')"
+                onmouseup="oninputSliderRelease('blue', 'chaserBlueSlider')">
+            <p id="chaserBlueDisplay">0</p>
+        </div>
     </div>
     <div id="flow" class="menu">
         <h1 style="text-align: center;">Flow</h1>
+        <p>Flow Speed</p>
         <input type="range" min="1" max="100" value="1" class="inputSlider" id="flowSlider"
             oninput="onSliderChange(value, 'flowDisplay')" ontouchend="onFlowSliderRelease(value)"
             onmouseup="onFlowSliderRelease(value)">
         <p id="flowDisplay">1</p>
     </div>
-    <div id="christmas" class="menu">
-        <h1 style="text-align: center;">Christmas</h1>
-        <input type="range" min="1" max="100" value="1" class="inputSlider" id="christmasSlider"
-            oninput="onSliderChange(value, 'christmasDisplay')" ontouchend="onChristmasSliderRelease(value)"
-            onmouseup="onChristmasSliderRelease(value)">
-        <p id="christmasDisplay">1</p>
+    <div id="ember" class="menu">
+        <h1 style="text-align: center;">Ember</h1>
+        <p>Ember Speed</p>
+        <input type="range" min="1" max="100" value="1" class="inputSlider" id="emberSlider"
+            oninput="onSliderChange(value, 'emberDisplay')" ontouchend="onEmberSliderRelease(value)"
+            onmouseup="onEmberSliderRelease(value)">
+        <p id="emberDisplay">1</p>
+        <div class="sliderDisplayPair">
+            <p>Red:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="emberRedSlider"
+                oninput="onSliderChange(value, 'emberRedDisplay')"
+                ontouchend="oninputSliderRelease('red', 'emberRedSlider')"
+                onmouseup="oninputSliderRelease('red', 'emberRedSlider')">
+            <p id="emberRedDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Green:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="emberGreenSlider"
+                oninput="onSliderChange(value, 'emberGreenDisplay')"
+                ontouchend="oninputSliderRelease('green', 'emberGreenSlider')"
+                onmouseup="oninputSliderRelease('green', 'emberGreenSlider')">
+            <p id="emberGreenDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Blue:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="emberBlueSlider"
+                oninput="onSliderChange(value, 'emberBlueDisplay')"
+                ontouchend="oninputSliderRelease('blue', 'emberBlueSlider')"
+                onmouseup="oninputSliderRelease('blue', 'emberBlueSlider')">
+            <p id="emberBlueDisplay">0</p>
+        </div>
     </div>
 </body>

@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <EEPROM.h>
+
 
 #include "MyTasks.h"
 #include "MyLeds.h"
@@ -17,11 +17,4 @@ void startLedTask()
         &LED,           // Task Handle
         1               //Core
     );
-}
-
-void restartIntoMode(int mode)
-{
-  EEPROM.write(0, mode);
-  EEPROM.commit();
-  ESP.restart();
 }

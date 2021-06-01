@@ -1,3 +1,3 @@
 #include "ServerDeclaration.h"
 
-WebServer server(80);
+AsyncWebServer server(80);

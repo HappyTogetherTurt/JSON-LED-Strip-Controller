@@ -4,6 +4,4 @@
 void startLedTask();
 void startWiFiTask();
 
-void restartIntoMode();
-
 #endif
