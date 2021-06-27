@@ -63,9 +63,7 @@ void wifiSetup()
               });
 
     server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        request->send(SPIFFS, "/favicon.ico");
-    });
+              { request->send(SPIFFS, "/favicon.ico"); });
 
     server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request)
               {
@@ -124,7 +122,7 @@ void wifiSetup()
             }
         });
 
-        server.on(
+    server.on(
         "/breathe", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
         {
             request->send_P(200, "application/json", "{\"status\":\"BREATHE_RECIEVED\"}");
@@ -188,7 +186,47 @@ void wifiSetup()
             MYLEDS::data[EMBER_DELAY] = doc["emberSpeed"];
         });
 
-    /*server.on(
+    server.on(
+        "/update", HTTP_POST, [](AsyncWebServerRequest *request) {}, [](AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
+        {
+            if (!index)
+            {
+                Serial.println("Update");
+                size_t content_len = request->contentLength();
+                // if filename includes spiffs, update the spiffs partition
+                int cmd = (filename.indexOf("spiffs") > -1) ? U_SPIFFS : U_FLASH;
+                if (!Update.begin(UPDATE_SIZE_UNKNOWN, cmd))
+                {
+                    Update.printError(Serial);
+                }
+            }
+
+            if (Update.write(data, len) != len)
+            {
+                Update.printError(Serial);
+            }
+
+            if (final)
+            {
+                AsyncWebServerResponse *response = request->beginResponse(302, "text/plain", "Please wait while the device reboots");
+                response->addHeader("Refresh", "20");
+                response->addHeader("Location", "/");
+                request->send(response);
+                if (!Update.end(true))
+                {
+                    Update.printError(Serial);
+                }
+                else
+                {
+                    Serial.println("Update complete");
+                    Serial.flush();
+                    ESP.restart();
+                }
+            }
+        });
+}
+
+/*server.on(
         "/update", HTTP_POST, []() {
     server.sendHeader("Connection", "close");
     server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
@@ -220,4 +258,3 @@ void wifiSetup()
                     Update.printError(Serial);
                 }
             } });*/
-}
