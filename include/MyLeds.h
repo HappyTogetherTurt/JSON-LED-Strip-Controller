@@ -4,7 +4,7 @@
 #include <FastLED.h>
 #include <Preferences.h>
 
-#define NUM_LEDS 8
+#define NUM_LEDS 300
 #define DATA_PIN 4
 
 void ledSetup();
