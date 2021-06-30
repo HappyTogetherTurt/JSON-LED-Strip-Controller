@@ -48,7 +48,7 @@ void ledHandling(void *parameter)
     case UPDATE:
         for (;;)
         {
-            blink(50);
+            blink(500);
         }
 
     case MANUAL:

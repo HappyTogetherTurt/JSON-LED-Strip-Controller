@@ -22,11 +22,11 @@ String ip2Str(IPAddress ip)
 
 String processor(const String &var)
 {
-    Serial.println(var);
+    /*Serial.println(var);
     if (var == "IP")
     {
         return ip2Str(WiFi.localIP());
-    }
+    }*/
     return String();
 }
 

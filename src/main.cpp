@@ -15,8 +15,8 @@
 void setup()
 {
 if(!SPIFFS.begin(true)) {Serial.println("An Error has occurred while mounting SPIFFS");}
-preferences.begin("candlePrefs", false);
-if(!MDNS.begin("candle")) {Serial.println("An Error has occurred while beginning mDNS");}
+preferences.begin("lightsPrefs", false);
+if(!MDNS.begin("lights")) {Serial.println("An Error has occurred while beginning mDNS");}
 MYWIFI::wifiSetup();
 pinMode(2, OUTPUT);
 pinMode(4, OUTPUT);

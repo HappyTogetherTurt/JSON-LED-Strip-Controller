@@ -24,7 +24,7 @@
         var pressed = false;
         var modes = ["update", "manual", "breathe", "chaser", "flow", "ember"];
         function onClickHandle(mode) {
-            http.put("http://candle.local/mode", { "mode": mode })
+            http.put("http://lights.local/mode", { "mode": mode })
                 .then(data => console.log(data))
                 .then(err => console.log(err));
             for (i = 1; i <= 5; i++) {
@@ -81,29 +81,29 @@
                     console.log(colour);
                     break;
             }
-            http.put("http://candle.local/rgb", data);
+            http.put("http://lights.local/rgb", data);
         }
 
         function onBreatheSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
             speed_actual = speed_actual;
-            http.put("http://candle.local/breathe", { "breatheSpeed": speed_actual });
+            http.put("http://lights.local/breathe", { "breatheSpeed": speed_actual });
         }
 
         function onRainbowChaserSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
             speed_actual = 0.25 * speed_actual;
-            http.put("http://candle.local/chaser", { "chaserSpeed": speed_actual });
+            http.put("http://lights.local/chaser", { "chaserSpeed": speed_actual });
         }
 
         function onFlowSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            http.put("http://candle.local/flow", { "flowSpeed": speed_actual });
+            http.put("http://lights.local/flow", { "flowSpeed": speed_actual });
         }
 
         function onEmberSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            http.put("http://candle.local/ember", { "emberSpeed": speed_actual });
+            http.put("http://lights.local/ember", { "emberSpeed": speed_actual });
         }
     </script>
     <title>Controller</title>
