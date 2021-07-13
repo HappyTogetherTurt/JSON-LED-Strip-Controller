@@ -65,12 +65,21 @@ void wifiSetup()
     server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/favicon.ico"); });
 
-    server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/debug", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-                  request->send_P(200, "application/json", "{\"status\":\"TEST_RECIEVED\"}");
-                  Serial.println(preferences.getInt("red"));
-                  Serial.println(preferences.getInt("green"));
-                  Serial.println(preferences.getInt("blue"));
+                  StaticJsonDocument<200> doc;
+                  JsonArray dataCopy;
+                  for (int i = 0; i <= 9; i ++)
+                  {
+                      dataCopy.add(data[i]);
+                  }
+                  doc.add(dataCopy);
+                  String serialisedJsonDoc;
+                  serializeJsonPretty(doc, serialisedJsonDoc);
+                  serializeJsonPretty(doc, Serial);
+                  char charArray[sizeof(serialisedJsonDoc)];
+                  serialisedJsonDoc.toCharArray(charArray, sizeof(serialisedJsonDoc));
+                  request->send_P(200, "application/json", charArray);
               });
 
     server.on(
