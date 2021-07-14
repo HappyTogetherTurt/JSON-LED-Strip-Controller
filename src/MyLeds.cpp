@@ -12,6 +12,7 @@ Preferences preferences;
 void ledSetup()
 {
     modeVar = (Mode) preferences.getInt("mode");
+    data[9] = preferences.getInt("mode");
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 }
 
@@ -42,7 +43,7 @@ void ledHandling(void *parameter)
         leds[i].setRGB(0, 0, 0);
     }
 
-    switch (preferences.getInt("mode"))
+    switch (data[9])
     {
 
     case UPDATE:

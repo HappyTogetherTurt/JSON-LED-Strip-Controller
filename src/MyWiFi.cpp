@@ -68,17 +68,18 @@ void wifiSetup()
     server.on("/debug", HTTP_GET, [](AsyncWebServerRequest *request)
               {
                   StaticJsonDocument<200> doc;
-                  JsonArray dataCopy;
+                  StaticJsonDocument<380> _;
+                  JsonArray dataCopy = _.to<JsonArray>();
                   for (int i = 0; i <= 9; i ++)
                   {
                       dataCopy.add(data[i]);
                   }
                   doc.add(dataCopy);
                   String serialisedJsonDoc;
-                  serializeJsonPretty(doc, serialisedJsonDoc);
-                  serializeJsonPretty(doc, Serial);
-                  char charArray[sizeof(serialisedJsonDoc)];
-                  serialisedJsonDoc.toCharArray(charArray, sizeof(serialisedJsonDoc));
+                  serializeJsonPretty(dataCopy, serialisedJsonDoc);
+                  serializeJsonPretty(dataCopy, Serial);
+                  char charArray[serialisedJsonDoc.length() + 1];
+                  serialisedJsonDoc.toCharArray(charArray, serialisedJsonDoc.length() + 1);
                   request->send_P(200, "application/json", charArray);
               });
 
