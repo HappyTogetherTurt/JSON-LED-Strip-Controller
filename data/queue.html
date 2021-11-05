@@ -2,18 +2,40 @@
 
 <head>
     <title>
-        Loading queue...
+        Queue
     </title>
 </head>
 
 <style>
     .counterDiv {
         text-align: center;
+        display: none;
+    }
+
+    .greetingDiv {
+        text-align: center;
     }
 </style>
 
+<script>
+    function onClickButton() {
+        document.getElementById("greetingDiv").style.display = "none";
+        document.getElementById("counterDiv").style.display = "inline";
+        setInterval(fetchPlacement, 500);
+    }
+
+    function fetchPlacement() {
+        document.title = Math.random();
+    }
+</script>
+
 <body>
-    <div class="counterDiv">
+    <div class="greetingDiv" id="greetingDiv">
+        <button onclick="onClickButton()">
+            Click here to join the queue
+        </button>
+    </div>
+    <div class="counterDiv" id="counterDiv">
         <p>
             You are:
         </p>
