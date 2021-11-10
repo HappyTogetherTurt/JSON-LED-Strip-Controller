@@ -10,6 +10,8 @@
 
 #include "MyLeds.h"
 
+std::deque<IPAddress> ipAddressesInQueue;
+
 String ip2Str(IPAddress ip)
 {
     String s = "";
@@ -59,8 +61,7 @@ void wifiSetup()
               {
                   AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/controller.html", String(), false, processor);
                   response->addHeader("Access-Control-Allow-Origin", "*");
-                  request->send(response);
-              });
+                  request->send(response); });
 
     server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/favicon.ico"); });
@@ -68,10 +69,71 @@ void wifiSetup()
     server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request)
               {
                   request->send_P(200, "application/json", "{\"status\":\"TEST_RECIEVED\"}");
-                  Serial.println(preferences.getInt("red"));
+                  /*Serial.println(preferences.getInt("red"));
                   Serial.println(preferences.getInt("green"));
-                  Serial.println(preferences.getInt("blue"));
+                  Serial.println(preferences.getInt("blue")); });*/
+                  ipAddressesInQueue.pop_front();
+                  if (ipAddressesInQueue.size() != 0) {
+                    for (int i = 0; i <= ipAddressesInQueue.size() - 1; i++)
+                     {
+                         Serial.println(ipAddressesInQueue[i]);
+                     }
+                  }
+                  else
+                   Serial.println("Vector empty"); });
+
+    server.on("/register", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
+                  bool alreadyRegistered = false;
+                  if (ipAddressesInQueue.size() != 0)
+                  {
+                      for (int i = 0; i <= ipAddressesInQueue.size() - 1; i++)
+                      {
+                          if (ipAddressesInQueue[i] == request->client()->remoteIP())
+                          {
+                              alreadyRegistered = true;
+                          }
+                      }
+                  }
+                  if (!alreadyRegistered)
+                  {
+                      ipAddressesInQueue.push_back(request->client()->remoteIP());
+                      request->send_P(200, "application/json", "{\"status\":\"REGISTERED\"}");
+                  }
+                  else
+                  {
+                      request->send_P(500, "application/json", "{\"error\":\"Already registered\"}");
+                  }
               });
+
+    server.on("/placement", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
+                Serial.println(request->client()->remoteIP());
+                if (ipAddressesInQueue.size() != 0)
+                {
+                    bool ipAddressPresent = false;
+                    for (int i = 0; i <= ipAddressesInQueue.size() - 1; i++)
+                    {
+                        if (ipAddressesInQueue[i] == request->client()->remoteIP())
+                        {
+                            ipAddressPresent = true;
+                            int position = i + 1;
+                            String jsonToSend;
+                            jsonToSend += "{\"placement\":";
+                            jsonToSend += position;
+                            jsonToSend += "}";
+                            request->send_P(200, "application/json", jsonToSend.c_str());
+                        }
+                    }
+                    if (!ipAddressPresent)
+                    {
+                        request->send_P(500, "application/json", "{\"error\":\"IP Address not registered\"}");
+                    }
+                }
+                else
+                {
+                    request->send_P(500, "application/json", "{\"error\":\"ipAddressesInQueue.size() == 0\"}");
+                } });
 
     server.on(
         "/mode", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
@@ -92,8 +154,7 @@ void wifiSetup()
             preferences.putInt("green", MYLEDS::data[MANUAL_GREEN]);
             preferences.putInt("blue", MYLEDS::data[MANUAL_BLUE]);
             preferences.end();
-            ESP.restart();
-        });
+            ESP.restart(); });
 
     server.on(
         "/rgb", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
@@ -119,8 +180,7 @@ void wifiSetup()
             if (doc["blue"] != 256)
             {
                 MYLEDS::data[MANUAL_BLUE] = doc["blue"];
-            }
-        });
+            } });
 
     server.on(
         "/breathe", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
@@ -135,8 +195,7 @@ void wifiSetup()
             StaticJsonDocument<25> doc;
             deserializeJson(doc, json);
 
-            MYLEDS::data[BREATHE_DELAY] = doc["breatheSpeed"];
-        });
+            MYLEDS::data[BREATHE_DELAY] = doc["breatheSpeed"]; });
 
     server.on(
         "/chaser", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
@@ -151,8 +210,7 @@ void wifiSetup()
             StaticJsonDocument<25> doc;
             deserializeJson(doc, json);
 
-            MYLEDS::data[CHASER_DELAY] = doc["chaserSpeed"];
-        });
+            MYLEDS::data[CHASER_DELAY] = doc["chaserSpeed"]; });
 
     server.on(
         "/flow", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
@@ -167,8 +225,7 @@ void wifiSetup()
             StaticJsonDocument<25> doc;
             deserializeJson(doc, json);
 
-            MYLEDS::data[FLOW_DELAY] = doc["flowSpeed"];
-        });
+            MYLEDS::data[FLOW_DELAY] = doc["flowSpeed"]; });
 
     server.on(
         "/ember", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
@@ -183,8 +240,7 @@ void wifiSetup()
             StaticJsonDocument<25> doc;
             deserializeJson(doc, json);
 
-            MYLEDS::data[EMBER_DELAY] = doc["emberSpeed"];
-        });
+            MYLEDS::data[EMBER_DELAY] = doc["emberSpeed"]; });
 
     server.on(
         "/update", HTTP_POST, [](AsyncWebServerRequest *request) {}, [](AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
@@ -222,6 +278,5 @@ void wifiSetup()
                     Serial.flush();
                     ESP.restart();
                 }
-            }
-        });
+            } });
 }
