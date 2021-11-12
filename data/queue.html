@@ -18,14 +18,19 @@
 </style>
 
 <script>
-    function onClickButton() {
+    async function onClickButton() {
         document.getElementById("greetingDiv").style.display = "none";
         document.getElementById("counterDiv").style.display = "inline";
-        setInterval(fetchPlacement, 500);
+        let response = await fetch("register");
+        let jsonResponse = await response.json();
+        document.getElementById("placeCounter").innerHTML = jsonResponse.placement;
+        setInterval(fetchPlacement, 2000);
     }
 
-    function fetchPlacement() {
-        document.title = Math.random();
+    async function fetchPlacement() {
+        let response = await fetch("placement");
+        let jsonResponse = await response.json();
+        document.getElementById("placeCounter").innerHTML = jsonResponse.placement;
     }
 </script>
 

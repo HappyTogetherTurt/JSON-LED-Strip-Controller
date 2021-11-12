@@ -10,6 +10,7 @@
 
 #include "MyLeds.h"
 
+
 std::deque<IPAddress> ipAddressesInQueue;
 
 String ip2Str(IPAddress ip)
@@ -74,6 +75,9 @@ void wifiSetup()
 
         });
 
+    server.on("/queue", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/queue.html"); });
+
     server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/favicon.ico"); });
 
@@ -110,11 +114,30 @@ void wifiSetup()
         if (!alreadyRegistered)
         {
             ipAddressesInQueue.push_back(request->client()->remoteIP());
-            request->send_P(200, "application/json", "{\"status\":\"REGISTERED\"}");
+            
+            int placement = ipAddressesInQueue.size();
+            String responseJson = "{\"status\":\"REGISTERED\", \"placement\":";
+            responseJson += placement;
+            responseJson += "}";
+
+            Serial.println(responseJson);
+
+            request->send_P(200, "application/json", responseJson.c_str());
         }
         else
         {
-            request->send_P(500, "application/json", "{\"error\":\"Already registered\"}");
+            for (int i = 0; i <= ipAddressesInQueue.size() - 1; i++)
+            {
+                if (ipAddressesInQueue[i] == request->client()->remoteIP())
+                {
+                    int placement = i + 1;
+                    String jsonToSend;
+                    jsonToSend += "{\"error\":\"Already registered\", \"placement\":";
+                    jsonToSend += placement;
+                    jsonToSend += "}";
+                    request->send_P(200, "application/json", jsonToSend.c_str());
+                }
+            }
         } });
 
     server.on("/placement", HTTP_GET, [](AsyncWebServerRequest *request)
