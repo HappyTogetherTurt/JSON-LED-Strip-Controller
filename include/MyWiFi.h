@@ -2,6 +2,7 @@
 #define MYWIFI
 
 #include <Wifi.h>
+#include <ESPmDNS.h>
 
 #include "WifiCredentials.h"
 

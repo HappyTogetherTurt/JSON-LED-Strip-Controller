@@ -22,12 +22,12 @@
         }
         const http = new EasyHTTP;
         var pressed = false;
-        var modes = ["update", "manual", "breathe", "chaser", "flow", "ember"];
+        var modes = ["greeting", "manual", "breathe", "chaser", "flow", "ember", "notify"];
         function onClickHandle(mode) {
-            http.put("http://lights.local/mode", { "mode": mode })
+            http.put("http://lamp.local/mode", { "mode": mode })
                 .then(data => console.log(data))
                 .then(err => console.log(err));
-            for (i = 1; i <= 5; i++) {
+            for (i = 0; i <= 6; i++) {
                 document.getElementById(modes[i]).style.display = "none";
             }
             document.getElementById(modes[mode]).style.display = "block";
@@ -49,7 +49,7 @@
             document.getElementById(displayID).innerHTML = value;
         }
 
-        function oninputSliderRelease(colour, sliderID) {
+        function onInputSliderRelease(colour, sliderID) {
             switch (colour) {
                 case 'red':
                     data = {
@@ -81,29 +81,68 @@
                     console.log(colour);
                     break;
             }
-            http.put("http://lights.local/rgb", data);
+            http.put("http://lamp.local/rgb", data);
+        }
+
+        function onNotifySliderRelease(colour, sliderID) {
+            switch (colour) {
+                case 'red':
+                    data = {
+                        'red': parseInt(document.getElementById(sliderID).value, 10),
+                        'green': 256,
+                        'blue': 256
+                    }
+                    break;
+                case 'green':
+                    data = {
+                        'red': 256,
+                        'green': parseInt(document.getElementById(sliderID).value, 10),
+                        'blue': 256
+                    }
+                    break;
+                case 'blue':
+                    data = {
+                        'red': 256,
+                        'green': 256,
+                        'blue': parseInt(document.getElementById(sliderID).value, 10)
+                    }
+                    break;
+                default:
+                    data = {
+                        'red': 200,
+                        'green': 10,
+                        'blue': 1
+                    }
+                    console.log(colour);
+                    break;
+            }
+            http.put("http://lamp.local/notify", data);
         }
 
         function onBreatheSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
             speed_actual = speed_actual;
-            http.put("http://lights.local/breathe", { "breatheSpeed": speed_actual });
+            http.put("http://lamp.local/breathe", { "breatheSpeed": speed_actual });
         }
 
         function onRainbowChaserSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            speed_actual = 0.25 * speed_actual;
-            http.put("http://lights.local/chaser", { "chaserSpeed": speed_actual });
+            http.put("http://lamp.local/chaser", { "chaserSpeed": speed_actual });
         }
 
         function onFlowSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            http.put("http://lights.local/flow", { "flowSpeed": speed_actual });
+            http.put("http://lamp.local/flow", { "flowSpeed": speed_actual });
         }
 
         function onEmberSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
-            http.put("http://lights.local/ember", { "emberSpeed": speed_actual });
+            http.put("http://lamp.local/ember", { "emberSpeed": speed_actual });
+        }
+
+        function onNotifyTestColour() {
+            http.put("http://lamp.local/notify", {"red": 256, "green": 256, "blue": 256, "notification": 1});
+            http.put("http://lamp.local/notify", {"red": 256, "green": 256, "blue": 256, "notification": 2});
         }
     </script>
     <title>Controller</title>
@@ -204,142 +243,185 @@
                     Ember
                 </button>
             </li>
+            <li>
+                <button onclick="onClickHandle(6)">
+                    Notify
+                </button>
+            </li>
         </ul>
     </div>
     <div class="floating">
-        <button onclick="sidenavToggle()">
+        <button onclick="sidenavToggle()" style="text-align: center;">
             Menu
         </button>
+    </div>
+    <div id="greeting" style="text-align: center;">
+        <h1>
+            Welcome Izzi :)
+        </h1>
+        <a href="http://lamp.local/help">Help!</a>
     </div>
     <div id="manual" class="menu">
         <h1 style="text-align: center;">Manual</h1>
         <div class="smallSliderDisplayPair">
             <p>Red:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualRedSlider"
+            <input type="range" min="0" max="255" value="`RED`" class="inputSlider" id="manualRedSlider"
                 oninput="onSliderChange(value, 'manualRedDisplay')"
-                ontouchend="oninputSliderRelease('red', 'manualRedSlider')"
-                onmouseup="oninputSliderRelease('red', 'manualRedSlider')">
-            <p id="manualRedDisplay">0</p>
+                ontouchend="onInputSliderRelease('red', 'manualRedSlider')"
+                onmouseup="onInputSliderRelease('red', 'manualRedSlider')">
+            <p id="manualRedDisplay">`RED`</p>
         </div>
         <div class="smallSliderDisplayPair">
             <p>Green:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualGreenSlider"
+            <input type="range" min="0" max="255" value="`GREEN`" class="inputSlider" id="manualGreenSlider"
                 oninput="onSliderChange(value, 'manualGreenDisplay')"
-                ontouchend="oninputSliderRelease('green', 'manualGreenSlider')"
-                onmouseup="oninputSliderRelease('green', 'manualGreenSlider')">
-            <p id="manualGreenDisplay">0</p>
+                ontouchend="onInputSliderRelease('green', 'manualGreenSlider')"
+                onmouseup="onInputSliderRelease('green', 'manualGreenSlider')">
+            <p id="manualGreenDisplay">`GREEN`</p>
         </div>
         <div class="smallSliderDisplayPair">
             <p>Blue:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="manualBlueSlider"
+            <input type="range" min="0" max="255" value="`BLUE`" class="inputSlider" id="manualBlueSlider"
                 oninput="onSliderChange(value, 'manualBlueDisplay')"
-                ontouchend="oninputSliderRelease('blue', 'manualBlueSlider')"
-                onmouseup="oninputSliderRelease('blue', 'manualBlueSlider')">
-            <p id="manualBlueDisplay">0</p>
+                ontouchend="onInputSliderRelease('blue', 'manualBlueSlider')"
+                onmouseup="onInputSliderRelease('blue', 'manualBlueSlider')">
+            <p id="manualBlueDisplay">`BLUE`</p>
         </div>
     </div>
     <div id="breathe" class="menu">
         <h1 style="text-align: center;">Breathe</h1>
         <p>Breathe Speed</p>
-        <input type="range" min="1" max="100" value="1" class="inputSlider" id="breatheSlider"
+        <input type="range" min="1" max="100" value="`BREATHE_SPEED`" class="inputSlider" id="breatheSlider"
             oninput="onSliderChange(value, 'breatheDisplay')" ontouchend="onBreatheSliderRelease(value)"
             onmouseup="onBreatheSliderRelease(value)">
-        <p id="breatheDisplay">1</p>
+        <p id="breatheDisplay">`BREATHE_SPEED`</p>
         <div class="sliderDisplayPair">
             <p>Red:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="breatheRedSlider"
+            <input type="range" min="0" max="255" value="`RED`" class="inputSlider" id="breatheRedSlider"
                 oninput="onSliderChange(value, 'breatheRedDisplay')"
-                ontouchend="oninputSliderRelease('red', 'breatheRedSlider')"
-                onmouseup="oninputSliderRelease('red', 'breatheRedSlider')">
-            <p id="breatheRedDisplay">0</p>
+                ontouchend="onInputSliderRelease('red', 'breatheRedSlider')"
+                onmouseup="onInputSliderRelease('red', 'breatheRedSlider')">
+            <p id="breatheRedDisplay">`RED`</p>
         </div>
         <div class="sliderDisplayPair">
             <p>Green:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="breatheGreenSlider"
+            <input type="range" min="0" max="255" value="`GREEN`" class="inputSlider" id="breatheGreenSlider"
                 oninput="onSliderChange(value, 'breatheGreenDisplay')"
-                ontouchend="oninputSliderRelease('green', 'breatheGreenSlider')"
-                onmouseup="oninputSliderRelease('green', 'breatheGreenSlider')">
-            <p id="breatheGreenDisplay">0</p>
+                ontouchend="onInputSliderRelease('green', 'breatheGreenSlider')"
+                onmouseup="onInputSliderRelease('green', 'breatheGreenSlider')">
+            <p id="breatheGreenDisplay">`GREEN`</p>
         </div>
         <div class="sliderDisplayPair">
             <p>Blue:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="breatheBlueSlider"
+            <input type="range" min="0" max="255" value="`BLUE`" class="inputSlider" id="breatheBlueSlider"
                 oninput="onSliderChange(value, 'breatheBlueDisplay')"
-                ontouchend="oninputSliderRelease('blue', 'breatheBlueSlider')"
-                onmouseup="oninputSliderRelease('blue', 'breatheBlueSlider')">
-            <p id="breatheBlueDisplay">0</p>
+                ontouchend="onInputSliderRelease('blue', 'breatheBlueSlider')"
+                onmouseup="onInputSliderRelease('blue', 'breatheBlueSlider')">
+            <p id="breatheBlueDisplay">`BLUE`</p>
         </div>
     </div>
     <div id="chaser" class="menu">
         <h1 style="text-align: center;">Chaser</h1>
         <p>Chaser Speed</p>
-        <input type="range" min="1" max="100" value="1" class="inputSlider" id="chaserSlider"
+        <input type="range" min="1" max="100" value="`CHASER_SPEED`" class="inputSlider" id="chaserSlider"
             oninput="onSliderChange(value, 'chaserDisplay')" ontouchend="onRainbowChaserSliderRelease(value)"
             onmouseup="onRainbowChaserSliderRelease(value)">
-        <p id="chaserDisplay">1</p>
+        <p id="chaserDisplay">`CHASER_SPEED`</p>
         <div class="sliderDisplayPair">
             <p>Red:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="chaserRedSlider"
+            <input type="range" min="0" max="255" value="`RED`" class="inputSlider" id="chaserRedSlider"
                 oninput="onSliderChange(value, 'chaserRedDisplay')"
-                ontouchend="oninputSliderRelease('red', 'chaserRedSlider')"
-                onmouseup="oninputSliderRelease('red', 'chaserRedSlider')">
-            <p id="chaserRedDisplay">0</p>
+                ontouchend="onInputSliderRelease('red', 'chaserRedSlider')"
+                onmouseup="onInputSliderRelease('red', 'chaserRedSlider')">
+            <p id="chaserRedDisplay">`RED`</p>
         </div>
         <div class="sliderDisplayPair">
             <p>Green:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="chaserGreenSlider"
+            <input type="range" min="0" max="255" value="`GREEN`" class="inputSlider" id="chaserGreenSlider"
                 oninput="onSliderChange(value, 'chaserGreenDisplay')"
-                ontouchend="oninputSliderRelease('green', 'chaserGreenSlider')"
-                onmouseup="oninputSliderRelease('green', 'chaserGreenSlider')">
-            <p id="chaserGreenDisplay">0</p>
+                ontouchend="onInputSliderRelease('green', 'chaserGreenSlider')"
+                onmouseup="onInputSliderRelease('green', 'chaserGreenSlider')">
+            <p id="chaserGreenDisplay">`GREEN`</p>
         </div>
         <div class="sliderDisplayPair">
             <p>Blue:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="chaserBlueSlider"
+            <input type="range" min="0" max="255" value="`BLUE`" class="inputSlider" id="chaserBlueSlider"
                 oninput="onSliderChange(value, 'chaserBlueDisplay')"
-                ontouchend="oninputSliderRelease('blue', 'chaserBlueSlider')"
-                onmouseup="oninputSliderRelease('blue', 'chaserBlueSlider')">
-            <p id="chaserBlueDisplay">0</p>
+                ontouchend="onInputSliderRelease('blue', 'chaserBlueSlider')"
+                onmouseup="onInputSliderRelease('blue', 'chaserBlueSlider')">
+            <p id="chaserBlueDisplay">`BLUE`</p>
         </div>
     </div>
     <div id="flow" class="menu">
         <h1 style="text-align: center;">Flow</h1>
         <p>Flow Speed</p>
-        <input type="range" min="1" max="100" value="1" class="inputSlider" id="flowSlider"
+        <input type="range" min="1" max="100" value="`FLOW_SPEED`" class="inputSlider" id="flowSlider"
             oninput="onSliderChange(value, 'flowDisplay')" ontouchend="onFlowSliderRelease(value)"
             onmouseup="onFlowSliderRelease(value)">
-        <p id="flowDisplay">1</p>
+        <p id="flowDisplay">`FLOW_SPEED`</p>
     </div>
     <div id="ember" class="menu">
         <h1 style="text-align: center;">Ember</h1>
         <p>Ember Speed</p>
-        <input type="range" min="1" max="100" value="1" class="inputSlider" id="emberSlider"
+        <input type="range" min="1" max="100" value="`EMBER_SPEED`" class="inputSlider" id="emberSlider"
             oninput="onSliderChange(value, 'emberDisplay')" ontouchend="onEmberSliderRelease(value)"
             onmouseup="onEmberSliderRelease(value)">
-        <p id="emberDisplay">1</p>
+        <p id="emberDisplay">`EMBER_SPEED`</p>
         <div class="sliderDisplayPair">
             <p>Red:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="emberRedSlider"
+            <input type="range" min="0" max="255" value="`RED`" class="inputSlider" id="emberRedSlider"
                 oninput="onSliderChange(value, 'emberRedDisplay')"
-                ontouchend="oninputSliderRelease('red', 'emberRedSlider')"
-                onmouseup="oninputSliderRelease('red', 'emberRedSlider')">
-            <p id="emberRedDisplay">0</p>
+                ontouchend="onInputSliderRelease('red', 'emberRedSlider')"
+                onmouseup="onInputSliderRelease('red', 'emberRedSlider')">
+            <p id="emberRedDisplay">`RED`</p>
         </div>
         <div class="sliderDisplayPair">
             <p>Green:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="emberGreenSlider"
+            <input type="range" min="0" max="255" value="`GREEN`" class="inputSlider" id="emberGreenSlider"
                 oninput="onSliderChange(value, 'emberGreenDisplay')"
-                ontouchend="oninputSliderRelease('green', 'emberGreenSlider')"
-                onmouseup="oninputSliderRelease('green', 'emberGreenSlider')">
-            <p id="emberGreenDisplay">0</p>
+                ontouchend="onInputSliderRelease('green', 'emberGreenSlider')"
+                onmouseup="onInputSliderRelease('green', 'emberGreenSlider')">
+            <p id="emberGreenDisplay">`GREEN`</p>
         </div>
         <div class="sliderDisplayPair">
             <p>Blue:</p>
-            <input type="range" min="0" max="255" value="0" class="inputSlider" id="emberBlueSlider"
+            <input type="range" min="0" max="255" value="`BLUE`" class="inputSlider" id="emberBlueSlider"
                 oninput="onSliderChange(value, 'emberBlueDisplay')"
-                ontouchend="oninputSliderRelease('blue', 'emberBlueSlider')"
-                onmouseup="oninputSliderRelease('blue', 'emberBlueSlider')">
-            <p id="emberBlueDisplay">0</p>
+                ontouchend="onInputSliderRelease('blue', 'emberBlueSlider')"
+                onmouseup="onInputSliderRelease('blue', 'emberBlueSlider')">
+            <p id="emberBlueDisplay">`BLUE`</p>
+        </div>
+    </div>
+    <div id="notify" class="menu">
+        <h1 style="text-align: center;">Notify</h1>
+        <div class="sliderDisplayPair">
+            <p>Red:</p>
+            <input type="range" min="0" max="255" value="`NOTIFY_RED`" class="inputSlider" id="notifyRedSlider"
+                oninput="onSliderChange(value, 'notifyRedDisplay')"
+                ontouchend="onNotifySliderRelease('red', 'notifyRedSlider')"
+                onmouseup="onNotifySliderRelease('red', 'notifyRedSlider')">
+            <p id="notifyRedDisplay">`NOTIFY_RED`</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Green:</p>
+            <input type="range" min="0" max="255" value="`NOTIFY_GREEN`" class="inputSlider" id="notifyGreenSlider"
+                oninput="onSliderChange(value, 'notifyGreenDisplay')"
+                ontouchend="onNotifySliderRelease('green', 'notifyGreenSlider')"
+                onmouseup="onNotifySliderRelease('green', 'notifyGreenSlider')">
+            <p id="notifyGreenDisplay">`NOTIFY_GREEN`</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Blue:</p>
+            <input type="range" min="0" max="255" value="`NOTIFY_BLUE`" class="inputSlider" id="notifyBlueSlider"
+                oninput="onSliderChange(value, 'notifyBlueDisplay')"
+                ontouchend="onNotifySliderRelease('blue', 'notifyBlueSlider')"
+                onmouseup="onNotifySliderRelease('blue', 'notifyBlueSlider')">
+            <p id="notifyBlueDisplay">`NOTIFY_BLUE`</p>
+        </div>
+        <div>
+            <button onclick="onNotifyTestColour()">
+                Test Colour
+            </button>
         </div>
     </div>
 </body>
