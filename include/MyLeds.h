@@ -22,7 +22,8 @@ enum Mode
     BREATHE,
     CHASER,
     FLOW,
-    EMBER
+    EMBER,
+    SUN
 };
 
 extern Mode modeVar;
@@ -35,7 +36,7 @@ enum Address
     BLUE_ADDRESS
 };
 
-//Mode-specific enums
+//Mode-specific enums for data[] vectors
 
 enum ManualEnum
 {
@@ -66,6 +67,11 @@ enum FlowEnum
 enum EmberEnum
 {
     EMBER_DELAY = 3
+};
+
+enum SunEnum
+{
+
 };
 
 #endif

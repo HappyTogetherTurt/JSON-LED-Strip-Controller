@@ -76,6 +76,7 @@ void wifiSetup()
     server.on(
         "/mode", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
         {
+            Serial.println("Mode");
             AsyncWebServerResponse *response = request->beginResponse(200, "application/json", "{\"status\":\"MODE_RECIEVED\"}");
             response->addHeader("Access-Control-Allow-Origin", "*");
             request->send(response);
