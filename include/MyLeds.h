@@ -4,7 +4,7 @@
 #include <FastLED.h>
 #include <Preferences.h>
 
-#define NUM_LEDS 8
+#define NUM_LEDS 300
 #define DATA_PIN 4
 
 void ledSetup();
@@ -12,7 +12,7 @@ void blink();
 void fill();
 void ledHandling(void *parameter);
 
-extern int data[11];
+extern int data[10];
 extern Preferences preferences;
 
 enum Mode
@@ -22,8 +22,7 @@ enum Mode
     BREATHE,
     CHASER,
     FLOW,
-    EMBER,
-    NOTIFY
+    EMBER
 };
 
 extern Mode modeVar;
@@ -36,41 +35,37 @@ enum Address
     BLUE_ADDRESS
 };
 
-// Mode-specific enums
+//Mode-specific enums
 
 enum ManualEnum
 {
-    RED,
-    GREEN,
-    BLUE
+    MANUAL_RED,
+    MANUAL_GREEN,
+    MANUAL_BLUE,
+    MANUAL_BREATHE
 };
 
 enum BreatheEnum
 {
-    BREATHE_DELAY = 3
+    BREATHE_RED,
+    BREATHE_GREEN,
+    BREATHE_BLUE,
+    BREATHE_DELAY
 };
 
 enum ChaserEnum
 {
-    CHASER_DELAY = 4
+    CHASER_DELAY = 3
 };
 
 enum FlowEnum
 {
-    FLOW_DELAY = 5
+    FLOW_DELAY
 };
 
 enum EmberEnum
 {
-    EMBER_DELAY = 6
-};
-
-enum NotifyEnum
-{
-    NOTIFY_RED = 7,
-    NOTIFY_GREEN = 8,
-    NOTIFY_BLUE = 9,
-    NOTIFY_NOTIFICATION = 10
+    EMBER_DELAY = 3
 };
 
 #endif

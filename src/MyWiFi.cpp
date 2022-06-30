@@ -22,27 +22,11 @@ String ip2Str(IPAddress ip)
 
 String processor(const String &var)
 {
-    Serial.println(var);
-    /*if (var == "IP")
+    /*Serial.println(var);
+    if (var == "IP")
     {
         return ip2Str(WiFi.localIP());
     }*/
-    if (var == "RED") {return String(MYLEDS::data[RED]);}
-    if (var == "GREEN") {return String(MYLEDS::data[GREEN]);}
-    if (var == "BLUE") {return String(MYLEDS::data[BLUE]);}
-
-    if (var == "BREATHE_SPEED") {return String(100 - MYLEDS::data[BREATHE_DELAY]);}
-
-    if (var == "CHASER_SPEED") {return String(100 - MYLEDS::data[CHASER_DELAY]);}
-
-    if (var == "FLOW_SPEED") {return String(100 - MYLEDS::data[FLOW_DELAY]);}
-
-    if (var == "EMBER_SPEED") {return String(100 - MYLEDS::data[EMBER_DELAY]);}
-
-    if (var == "NOTIFY_RED") {return String(MYLEDS::data[NOTIFY_RED]);}
-    if (var == "NOTIFY_GREEN") {return String(MYLEDS::data[NOTIFY_GREEN]);}
-    if (var == "NOTIFY_BLUE") {return String(MYLEDS::data[NOTIFY_BLUE]);}
-
     return String();
 }
 
@@ -69,20 +53,11 @@ void wifiSetup()
     Serial.print(F("Connected. My IP address is: "));
     Serial.println(WiFi.localIP());
 
-    
-
     server.begin();
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               {
                   AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/controller.html", String(), false, processor);
-                  response->addHeader("Access-Control-Allow-Origin", "*");
-                  request->send(response);
-              });
-
-    server.on("/help", HTTP_GET, [](AsyncWebServerRequest *request)
-              {
-                  AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/help.html", String(), false, processor);
                   response->addHeader("Access-Control-Allow-Origin", "*");
                   request->send(response);
               });
@@ -93,10 +68,9 @@ void wifiSetup()
     server.on("/test", HTTP_GET, [](AsyncWebServerRequest *request)
               {
                   request->send_P(200, "application/json", "{\"status\":\"TEST_RECIEVED\"}");
-                  for(int i = 0; i <= 9; i++)
-                  {
-                      Serial.println(MYLEDS::data[i]);
-                  }
+                  Serial.println(preferences.getInt("red"));
+                  Serial.println(preferences.getInt("green"));
+                  Serial.println(preferences.getInt("blue"));
               });
 
     server.on(
@@ -114,9 +88,9 @@ void wifiSetup()
             StaticJsonDocument<20> doc;
             deserializeJson(doc, json);
             preferences.putInt("mode", doc["mode"]);
-            preferences.putInt("red", MYLEDS::data[RED]);
-            preferences.putInt("green", MYLEDS::data[GREEN]);
-            preferences.putInt("blue", MYLEDS::data[BLUE]);
+            preferences.putInt("red", MYLEDS::data[MANUAL_RED]);
+            preferences.putInt("green", MYLEDS::data[MANUAL_GREEN]);
+            preferences.putInt("blue", MYLEDS::data[MANUAL_BLUE]);
             preferences.end();
             ESP.restart();
         });
@@ -136,15 +110,15 @@ void wifiSetup()
 
             if (doc["red"] != 256)
             {
-                MYLEDS::data[RED] = doc["red"];
+                MYLEDS::data[MANUAL_RED] = doc["red"];
             }
             if (doc["green"] != 256)
             {
-                MYLEDS::data[GREEN] = doc["green"];
+                MYLEDS::data[MANUAL_GREEN] = doc["green"];
             }
             if (doc["blue"] != 256)
             {
-                MYLEDS::data[BLUE] = doc["blue"];
+                MYLEDS::data[MANUAL_BLUE] = doc["blue"];
             }
         });
 
@@ -210,40 +184,6 @@ void wifiSetup()
             deserializeJson(doc, json);
 
             MYLEDS::data[EMBER_DELAY] = doc["emberSpeed"];
-        });
-
-        server.on(
-        "/notify", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
-        {
-            request->send_P(200, "application/json", "{\"status\":\"NOTIFY_RECIEVED\"}");
-            char json[len + 1];
-            for (size_t i = 0; i < len; i++)
-            {
-                json[i] = (char)data[i];
-            }
-            json[len] = '\0';
-            Serial.println(json);
-            StaticJsonDocument<64> doc;
-            deserializeJson(doc, json);
-            if (doc["notification"] == 0 | 1)
-            {
-                MYLEDS::data[NOTIFY_NOTIFICATION] = (doc["notification"] == 1) ? 1 : 0; 
-            }
-            if (doc["red"] != 256)
-            {
-                preferences.putInt("notify_red", doc["red"]);
-                MYLEDS::data[NOTIFY_RED] = doc["red"];
-            }
-            if (doc["green"] != 256)
-            {
-                preferences.putInt("notify_green", doc["green"]);
-                MYLEDS::data[NOTIFY_GREEN] = doc["green"];
-            }
-            if (doc["blue"] != 256)
-            {
-                preferences.putInt("notify_blue", doc["blue"]);
-                MYLEDS::data[NOTIFY_BLUE] = doc["blue"];
-            }
         });
 
     server.on(

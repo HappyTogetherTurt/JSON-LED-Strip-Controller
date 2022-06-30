@@ -88,15 +88,15 @@ void manualHandle()
 
     if (doc["red"] != 256)
     {
-        data[RED] = doc["red"];
+        data[MANUAL_RED] = doc["red"];
     }
     if (doc["green"] != 256)
     {
-        data[GREEN] = doc["green"];
+        data[MANUAL_GREEN] = doc["green"];
     }
     if (doc["blue"] != 256)
     {
-        data[BLUE] = doc["blue"];
+        data[MANUAL_BLUE] = doc["blue"];
     }
 }
 
