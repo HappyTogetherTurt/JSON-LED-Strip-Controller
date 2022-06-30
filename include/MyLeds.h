@@ -71,7 +71,8 @@ enum EmberEnum
 
 enum SunEnum
 {
-
+    SUN_POSITION = 3,
+    SUN_WIDTH = 4
 };
 
 #endif

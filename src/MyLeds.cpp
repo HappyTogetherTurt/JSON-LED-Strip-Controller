@@ -274,6 +274,11 @@ void ledHandling(void *parameter)
             leds[emberLit].setRGB(0, 0, 0);
         }
 
+        case SUN:
+        {
+
+        }
+
     default:
         for (;;)
         {
