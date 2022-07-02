@@ -188,6 +188,22 @@ void wifiSetup()
         });
 
     server.on(
+        "/sun", HTTP_PUT, [](AsyncWebServerRequest *request) {}, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+        {
+            request->send_P(200, "application/json", "{\"status\":\"SUN_RECIEVED\"}");
+            char json[len + 1];
+            for (size_t i = 0; i < len; i++)
+            {
+                json[i] = (char)data[i];
+            }
+            json[len] = '\0';
+            StaticJsonDocument<48> doc;
+            deserializeJson(doc, json);
+
+            MYLEDS::data[SUN_FEATHER] = doc["sunFeather"];
+        });
+
+    server.on(
         "/update", HTTP_POST, [](AsyncWebServerRequest *request) {}, [](AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
         {
             if (!index)

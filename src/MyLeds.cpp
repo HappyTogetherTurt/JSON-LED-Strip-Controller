@@ -11,7 +11,7 @@ Preferences preferences;
 
 void ledSetup()
 {
-    modeVar = (Mode) preferences.getInt("mode");
+    modeVar = (Mode)preferences.getInt("mode");
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 }
 
@@ -32,6 +32,21 @@ void fill(int r, int g, int b, bool show)
     if (show)
     {
         FastLED.show();
+    }
+}
+
+int sunFeather(int x, int spread)
+{
+    float m = 1 / spread;
+    float y = -m * x; 
+    y += 1;
+    if(y >= 0)
+    {
+        return y * 255;
+    }
+    else
+    {
+        return 0;
     }
 }
 
@@ -274,10 +289,31 @@ void ledHandling(void *parameter)
             leds[emberLit].setRGB(0, 0, 0);
         }
 
-        case SUN:
+    case SUN:
+    {
+        data[MANUAL_RED] = preferences.getInt("red");
+        data[MANUAL_GREEN] = preferences.getInt("green");
+        data[MANUAL_BLUE] = preferences.getInt("blue");
+        data[SUN_FEATHER] = 2;
+        data[SUN_POSITION] = 50;
+        data[SUN_WIDTH] = 5;
+        for (int i = 0; i <= NUM_LEDS - 1; i++)
         {
-
+            leds[i].setRGB(0, 0, 0);
         }
+        for (;;)
+        {
+            CRGB rgb(data[MANUAL_RED], data[MANUAL_GREEN], data[MANUAL_BLUE]);
+            CHSV hsv = rgb2hsv_approximate(rgb);
+            for (int i = 0; i <= NUM_LEDS - 1; i++)
+            {
+                hsv.value = sunFeather(i, data[SUN_FEATHER]);
+                leds[i] = hsv;
+                FastLED.show();
+            }
+        }
+        break;
+    }
 
     default:
         for (;;)

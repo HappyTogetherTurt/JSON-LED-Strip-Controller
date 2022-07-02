@@ -4,7 +4,7 @@
 #include <FastLED.h>
 #include <Preferences.h>
 
-#define NUM_LEDS 300
+#define NUM_LEDS 8
 #define DATA_PIN 4
 
 void ledSetup();
@@ -72,7 +72,8 @@ enum EmberEnum
 enum SunEnum
 {
     SUN_POSITION = 3,
-    SUN_WIDTH = 4
+    SUN_WIDTH = 4,
+    SUN_FEATHER = 5
 };
 
 #endif
