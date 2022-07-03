@@ -41,9 +41,6 @@ int sunFeather(int x, float spread, int position)
     x -= position;
     float y = -m * x; 
     y += 1;
-    $(x);
-    $(y);
-    $(m);
     return (y > 0 && y <= 1) ? y * 255 : 0;
 }
 
@@ -307,9 +304,7 @@ void ledHandling(void *parameter)
                 hsv.value = sunFeather(i, data[SUN_FEATHER], data[SUN_POSITION]);
                 leds[i] = hsv;
                 FastLED.show();
-                delay(1000);
             }
-            delay(10000);
         }
         break;
     }

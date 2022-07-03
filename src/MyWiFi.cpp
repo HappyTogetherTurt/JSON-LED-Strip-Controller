@@ -197,7 +197,7 @@ void wifiSetup()
                 json[i] = (char)data[i];
             }
             json[len] = '\0';
-            StaticJsonDocument<100> doc;
+            StaticJsonDocument<48> doc;
             deserializeJson(doc, json);
 
             MYLEDS::data[SUN_FEATHER] = doc["sunFeather"];
