@@ -201,6 +201,8 @@ void wifiSetup()
             deserializeJson(doc, json);
 
             MYLEDS::data[SUN_FEATHER] = doc["sunFeather"];
+            MYLEDS::data[SUN_POSITION] = doc["sunPosition"];
+            MYLEDS::data[SUN_WIDTH] = doc["sunWidth"];
         });
 
     server.on(
