@@ -35,12 +35,16 @@ void fill(int r, int g, int b, bool show)
     }
 }
 
-int sunFeather(int x, float spread)
+int sunFeather(int x, float spread, int position)
 {
     float m = 1 / spread;
+    x -= position;
     float y = -m * x; 
     y += 1;
-    return (y > 0) ? y * 255 : 0;
+    $(x);
+    $(y);
+    $(m);
+    return (y > 0 && y <= 1) ? y * 255 : 0;
 }
 
 void ledHandling(void *parameter)
@@ -288,7 +292,7 @@ void ledHandling(void *parameter)
         data[MANUAL_GREEN] = preferences.getInt("green");
         data[MANUAL_BLUE] = preferences.getInt("blue");
         data[SUN_FEATHER] = 2;
-        data[SUN_POSITION] = 50;
+        data[SUN_POSITION] = 1;
         data[SUN_WIDTH] = 5;
         for (int i = 0; i <= NUM_LEDS - 1; i++)
         {
@@ -300,10 +304,12 @@ void ledHandling(void *parameter)
             CHSV hsv = rgb2hsv_approximate(rgb);
             for (int i = 0; i <= NUM_LEDS - 1; i++)
             {
-                hsv.value = sunFeather(i, data[SUN_FEATHER]);
+                hsv.value = sunFeather(i, data[SUN_FEATHER], data[SUN_POSITION]);
                 leds[i] = hsv;
                 FastLED.show();
+                delay(1000);
             }
+            delay(10000);
         }
         break;
     }
