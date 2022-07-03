@@ -76,4 +76,7 @@ enum SunEnum
     SUN_FEATHER = 5
 };
 
+//Debug macro - remove before release
+#define $(statement) Serial.println(statement)
+
 #endif

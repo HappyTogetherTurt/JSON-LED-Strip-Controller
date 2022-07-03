@@ -35,19 +35,12 @@ void fill(int r, int g, int b, bool show)
     }
 }
 
-int sunFeather(int x, int spread)
+int sunFeather(int x, float spread)
 {
     float m = 1 / spread;
     float y = -m * x; 
     y += 1;
-    if(y >= 0)
-    {
-        return y * 255;
-    }
-    else
-    {
-        return 0;
-    }
+    return (y > 0) ? y * 255 : 0;
 }
 
 void ledHandling(void *parameter)
