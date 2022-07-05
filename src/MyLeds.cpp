@@ -35,13 +35,24 @@ void fill(int r, int g, int b, bool show)
     }
 }
 
-int sunFeather(int x, float spread, int position)
+int sunFeather(int x, float spread, int offset, bool pos)
 {
-    float m = 1 / spread;
-    x -= position;
-    float y = -m * x; 
-    y += 1;
-    return (y > 0 && y <= 1) ? y * 255 : 0;
+    if (pos)
+    {
+        float m = 1 / spread;
+        x -= offset;
+        float y = m * x;
+        y += 1;
+        return (y > 0 && y <= 1) ? y * 255 : 0;
+    }
+    else if (!pos)
+    {
+        float m = 1 / spread;
+        x -= offset;
+        float y = -m * x;
+        y += 1;
+        return (y > 0 && y <= 1) ? y * 255 : 0;
+    }
 }
 
 void ledHandling(void *parameter)
@@ -289,8 +300,8 @@ void ledHandling(void *parameter)
         data[MANUAL_GREEN] = preferences.getInt("green");
         data[MANUAL_BLUE] = preferences.getInt("blue");
         data[SUN_FEATHER] = 2;
-        data[SUN_POSITION] = 1;
-        data[SUN_WIDTH] = 5;
+        data[SUN_POSITION] = 3;
+        data[SUN_WIDTH] = 2;
         for (int i = 0; i <= NUM_LEDS - 1; i++)
         {
             leds[i].setRGB(0, 0, 0);
@@ -301,7 +312,18 @@ void ledHandling(void *parameter)
             CHSV hsv = rgb2hsv_approximate(rgb);
             for (int i = 0; i <= NUM_LEDS - 1; i++)
             {
-                hsv.value = sunFeather(i, data[SUN_FEATHER], data[SUN_POSITION]);
+                if (i < data[SUN_POSITION] - (data[SUN_WIDTH] - 1))
+                {
+                    hsv.value = sunFeather(i, data[SUN_FEATHER], data[SUN_POSITION] - data[SUN_WIDTH], true);
+                }
+                else if (i > data[SUN_POSITION] + (data[SUN_WIDTH] - 1))
+                {
+                    hsv.value = sunFeather(i, data[SUN_FEATHER], data[SUN_POSITION] + data[SUN_WIDTH], false);
+                }
+                else
+                {
+                    hsv.value = 255;
+                }
                 leds[i] = hsv;
                 FastLED.show();
             }
