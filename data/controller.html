@@ -22,12 +22,12 @@
         }
         const http = new EasyHTTP;
         var pressed = false;
-        var modes = ["update", "manual", "breathe", "chaser", "flow", "ember"];
+        var modes = ["update", "manual", "breathe", "chaser", "flow", "ember", "sun"];
         function onClickHandle(mode) {
             http.put("http://lights.local/mode", { "mode": mode })
                 .then(data => console.log(data))
                 .then(err => console.log(err));
-            for (i = 1; i <= 5; i++) {
+            for (i = 1; i <= 6; i++) {
                 document.getElementById(modes[i]).style.display = "none";
             }
             document.getElementById(modes[mode]).style.display = "block";
@@ -104,6 +104,10 @@
         function onEmberSliderRelease(speed_percentage) {
             speed_actual = 100 - speed_percentage;
             http.put("http://lights.local/ember", { "emberSpeed": speed_actual });
+        }
+
+        function onSunSliderRelease(key, value) {
+            http.put("http://lights.local/ember", { key: value });
         }
     </script>
     <title>Controller</title>
@@ -202,6 +206,11 @@
             <li>
                 <button onclick="onClickHandle(5)">
                     Ember
+                </button>
+            </li>
+            <li>
+                <button onclick="onClickHandle(6)">
+                    Sun
                 </button>
             </li>
         </ul>
@@ -340,6 +349,48 @@
                 ontouchend="oninputSliderRelease('blue', 'emberBlueSlider')"
                 onmouseup="oninputSliderRelease('blue', 'emberBlueSlider')">
             <p id="emberBlueDisplay">0</p>
+        </div>
+    </div>
+    <div id="sun" class="menu">
+        <h1 style="text-align: center;">Sun</h1>
+        <p>Sun Position</p>
+        <input type="range" min="0" max="299" value="150" class="inputSlider" id="sunPositionSlider"
+            oninput="onSliderChange(value, 'sunPositionDisplay')" ontouchend="onsunSliderRelease('sunPosition', value)"
+            onmouseup="onsunSliderRelease(value)">
+        <p id="sunPositionDisplay">150</p>
+        <p>Sun Width</p>
+        <input type="range" min="1" max="100" value="5" class="inputSlider" id="sunSlider"
+            oninput="onSliderChange(value, 'sunWidthDisplay')" ontouchend="onsunSliderRelease('sunWidth', value)"
+            onmouseup="onsunSliderRelease(value)">
+        <p id="sunWidthDisplay">5</p>
+        <p>Sun Feather</p>
+        <input type="range" min="1" max="100" value="3" class="inputSlider" id="sunSlider"
+            oninput="onSliderChange(value, 'sunFeatherDisplay')" ontouchend="onsunSliderRelease('sunFeather', value)"
+            onmouseup="onsunSliderRelease(value)">
+        <p id="sunFeatherDisplay">3</p>
+        <div class="sliderDisplayPair">
+            <p>Red:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="sunRedSlider"
+                oninput="onSliderChange(value, 'sunRedDisplay')"
+                ontouchend="oninputSliderRelease('red', 'sunRedSlider')"
+                onmouseup="oninputSliderRelease('red', 'sunRedSlider')">
+            <p id="sunRedDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Green:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="sunGreenSlider"
+                oninput="onSliderChange(value, 'sunGreenDisplay')"
+                ontouchend="oninputSliderRelease('green', 'sunGreenSlider')"
+                onmouseup="oninputSliderRelease('green', 'sunGreenSlider')">
+            <p id="sunGreenDisplay">0</p>
+        </div>
+        <div class="sliderDisplayPair">
+            <p>Blue:</p>
+            <input type="range" min="0" max="255" value="0" class="inputSlider" id="sunBlueSlider"
+                oninput="onSliderChange(value, 'sunBlueDisplay')"
+                ontouchend="oninputSliderRelease('blue', 'sunBlueSlider')"
+                onmouseup="oninputSliderRelease('blue', 'sunBlueSlider')">
+            <p id="sunBlueDisplay">0</p>
         </div>
     </div>
 </body>
